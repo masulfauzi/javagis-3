@@ -25,6 +25,16 @@ class MenuTableSeeder extends Seeder
             'parent_id' => '-',
             'level' => 0
         ]);
+        $ref = Menu::create([
+            'menu' => 'Referensi',
+            'module' => 'no',
+            'routing' => 'no',
+            'is_tampil' => 1,
+            'icon' => 'fa-folder',
+            'urutan' => 4,
+            'parent_id' => '-',
+            'level' => 0
+        ]);
         $man = Menu::create([
             'menu' => 'Management Menu',
             'module' => 'no',
@@ -135,6 +145,26 @@ class MenuTableSeeder extends Seeder
             'icon' => 'fa-wave-square',
             'urutan' => 6,
             'parent_id' => $dev->id,
+            'level' => 1
+        ]);
+        Menu::create([
+            'menu' => 'Balai PSKL',
+            'module' => 'balaipskl',
+            'routing' => 'balaipskl.index',
+            'is_tampil' => 1,
+            'icon' => 'fa-folder',
+            'urutan' => 1,
+            'parent_id' => $ref->id,
+            'level' => 1
+        ]);
+        Menu::create([
+            'menu' => 'Seksi Wilayah',
+            'module' => 'seksiwilayah',
+            'routing' => 'seksiwilayah.index',
+            'is_tampil' => 1,
+            'icon' => 'fa-folder',
+            'urutan' => 2,
+            'parent_id' => $ref->id,
             'level' => 1
         ]);
 

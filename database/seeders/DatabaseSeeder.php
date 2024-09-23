@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Modules\Menu\Models\Menu;
+use App\Modules\SeksiWilayah\Models\SeksiWilayah;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -20,6 +21,8 @@ class DatabaseSeeder extends Seeder
         $this->call(UserRoleTableSeeder::class);
         $this->call(MenuTableSeeder::class);
         $this->call(PrivilegeTableSeeder::class);
+        $this->call(BalaiPsklSeeder::class);
+        $this->call(SeksiWilayahSeeder::class);
         // \App\Models\User::factory(10)->create();
 
         // \App\Models\User::factory()->create([
