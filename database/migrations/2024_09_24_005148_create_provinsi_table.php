@@ -13,13 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('seksi_wilayah', function (Blueprint $table) {
+        Schema::create('provinsi', function (Blueprint $table) {
             $table->uuid('id')->primary();
 
             // your columns here
-            $table->uuid('id_balai_pskl');
-            $table->foreign('id_balai_pskl')->references('id')->on('balai_pskl')->onUpdate('cascade')->onDelete('restrict');
-            $table->string('nama_seksi_wilayah');
+            $table->uuid('id_seksi_wilayah');
+            $table->foreign('id_seksi_wilayah')->references('id')->on('seksi_wilayah')->onUpdate('cascade')->onDelete('restrict');
+            $table->string('nama_provinsi');
+            $table->integer('kode_provinsi');
             
             $table->timestamps();
             $table->softDeletes();
@@ -36,10 +37,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('seksi_wilayah', function (Blueprint $table) {
-            $table->dropForeign('seksi_wilayah_id_balai_pskl_foreign');
-        });
-
-        Schema::dropIfExists('seksi_wilayah');
+        Schema::dropIfExists('provinsi');
     }
 };

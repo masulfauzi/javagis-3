@@ -167,7 +167,47 @@ class MenuTableSeeder extends Seeder
             'parent_id' => $ref->id,
             'level' => 1
         ]);
-
+        Menu::create([
+            'menu' => 'Provinsi',
+            'module' => 'provinsi',
+            'routing' => 'provinsi.index',
+            'is_tampil' => 1,
+            'icon' => 'fa-folder',
+            'urutan' => 3,
+            'parent_id' => $ref->id,
+            'level' => 1
+        ]);
+        Menu::create([
+            'menu' => 'Kabupaten',
+            'module' => 'kabupaten',
+            'routing' => 'kabupaten.index',
+            'is_tampil' => 1,
+            'icon' => 'fa-folder',
+            'urutan' => 4,
+            'parent_id' => $ref->id,
+            'level' => 1
+        ]);
+        Menu::create([
+            'menu' => 'Kecamatan',
+            'module' => 'kecamatan',
+            'routing' => 'kecamatan.index',
+            'is_tampil' => 1,
+            'icon' => 'fa-folder',
+            'urutan' => 5,
+            'parent_id' => $ref->id,
+            'level' => 1
+        ]);
+        Menu::create([
+            'menu' => 'Desa',
+            'module' => 'desa',
+            'routing' => 'desa.index',
+            'is_tampil' => 1,
+            'icon' => 'fa-folder',
+            'urutan' => 6,
+            'parent_id' => $ref->id,
+            'level' => 1
+        ]);
+        
         // Menu::create([
         //     'menu' => 'Backup & Restore',
         //     'module' => 'backup',
