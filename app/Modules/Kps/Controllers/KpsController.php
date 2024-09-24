@@ -40,14 +40,6 @@ class KpsController extends Controller
 		$ref_desa = Desa::limit(3)->pluck('id_kecamatan','id');
 		
 		$data['forms'] = array(
-			'nama_kps' => ['Nama Kps', Form::text("nama_kps", old("nama_kps"), ["class" => "form-control","placeholder" => "", "required" => "required"]) ],
-			'id_desa' => ['Desa', Form::select("id_desa", $ref_desa, null, ["class" => "form-control", "id" => "id_desa"]) ],
-			'no_sk' => ['No Sk', Form::text("no_sk", old("no_sk"), ["class" => "form-control","placeholder" => "", "required" => "required"]) ],
-			'tgl_sk' => ['Tgl Sk', Form::text("tgl_sk", old("tgl_sk"), ["class" => "form-control datepicker", "required" => "required"]) ],
-			'luas' => ['Luas', Form::text("luas", old("luas"), ["class" => "form-control","placeholder" => "", "required" => "required"]) ],
-			'koord_x' => ['Koord X', Form::text("koord_x", old("koord_x"), ["class" => "form-control","placeholder" => "", "required" => "required"]) ],
-			'koord_y' => ['Koord Y', Form::text("koord_y", old("koord_y"), ["class" => "form-control","placeholder" => "", "required" => "required"]) ],
-			
 		);
 
 		$this->log($request, 'membuka form tambah '.$this->title);
@@ -62,10 +54,14 @@ class KpsController extends Controller
 			'no_sk' => 'required',
 			'tgl_sk' => 'required',
 			'luas' => 'required',
-			'koord_x' => 'required',
-			'koord_y' => 'required',
+			'koordinat' => 'required',
+			// 'koord_y' => 'required',
 			
 		]);
+
+		$pecah_koordinat = explode(",",$request->input('koordinat'));
+
+		// dd($request->input('koordinat'));
 
 		$kps = new Kps();
 		$kps->nama_kps = $request->input("nama_kps");
@@ -73,8 +69,8 @@ class KpsController extends Controller
 		$kps->no_sk = $request->input("no_sk");
 		$kps->tgl_sk = $request->input("tgl_sk");
 		$kps->luas = $request->input("luas");
-		$kps->koord_x = $request->input("koord_x");
-		$kps->koord_y = $request->input("koord_y");
+		$kps->koord_x = $pecah_koordinat[0];
+		$kps->koord_y = $pecah_koordinat[1];
 		
 		$kps->created_by = Auth::id();
 		$kps->save();

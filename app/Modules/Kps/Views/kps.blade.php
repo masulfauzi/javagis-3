@@ -47,12 +47,12 @@
                             <tr>
                                 <th width="15">No</th>
                                 <td>Nama Kps</td>
-								<td>Desa</td>
+								<td>Wilayah</td>
 								<td>No Sk</td>
 								<td>Tgl Sk</td>
 								<td>Luas</td>
-								<td>Koord X</td>
-								<td>Koord Y</td>
+								{{-- <td>Koord X</td>
+								<td>Koord Y</td> --}}
 								
                                 <th width="20%">Aksi</th>
                             </tr>
@@ -63,12 +63,12 @@
                                 <tr>
                                     <td>{{ $no++ }}</td>
                                     <td>{{ $item->nama_kps }}</td>
-									<td>{{ $item->id_desa }}</td>
+									<td>{{ $item->desa->nama_desa }} - {{ $item->desa->kecamatan->nama_kecamatan }} - {{ $item->desa->kecamatan->kabupaten->nama_kabupaten }} - {{ $item->desa->kecamatan->kabupaten->provinsi->nama_provinsi }}</td>
 									<td>{{ $item->no_sk }}</td>
 									<td>{{ $item->tgl_sk }}</td>
-									<td>{{ $item->luas }}</td>
-									<td>{{ $item->koord_x }}</td>
-									<td>{{ $item->koord_y }}</td>
+									<td>{{ $item->luas }} Ha</td>
+									{{-- <td>{{ $item->koord_x }}</td> --}}
+									{{-- <td>{{ $item->koord_y }}</td> --}}
 									
                                     <td>
 										{!! button('kps.show','', $item->id) !!}
