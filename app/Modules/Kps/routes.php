@@ -4,6 +4,9 @@ use Illuminate\Support\Facades\Route;
 use App\Modules\Kps\Controllers\KpsController;
 
 Route::controller(KpsController::class)->middleware(['web','auth'])->name('kps.')->group(function(){
+	// route custom
+	Route::post('/kps/simpan_batas', 'simpan_batas')->name('simpan_batas.store');
+
 	Route::get('/kps', 'index')->name('index');
 	Route::get('/kps/data', 'data')->name('data.index');
 	Route::get('/kps/create', 'create')->name('create');

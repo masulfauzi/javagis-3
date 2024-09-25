@@ -34,6 +34,7 @@ return new class extends Migration
             $table->string('koord_y');
             $table->integer('luas');
             $table->integer('tahun_dibentuk');
+            $table->text('geojson');
             
             $table->timestamps();
             $table->softDeletes();

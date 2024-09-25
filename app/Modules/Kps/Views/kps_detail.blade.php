@@ -223,6 +223,16 @@
 
         map.addLayer(osm);
 
+        <?php
+
+        if($kps->geojson)
+        {
+            echo "var geojsonFeature = $kps->geojson;";
+            echo "L.geoJSON(geojsonFeature).addTo(map);";
+        }
+
+        ?>
+
         var marker = L.marker([{{ $kps->koord_y }}, {{ $kps->koord_x }}]).addTo(map);
 
         var drawnItems = new L.FeatureGroup();
@@ -255,15 +265,18 @@
                 // document.getElementById('koordinat').value = x;
                 // var marker = L.marker([51.5, -0.09]).addTo(map);
 
-                console.log(shape_for_db);
+                // console.log(shape_for_db);
 
                 $.ajax({
-                    url: "{{ url('/kps/simpan_penandaan_batas/') }}",
+                    url: "{{ route('kps.simpan_batas.store') }}",
                     type: "POST",
                     data: {
                         id_kps: "{{ $kps->id }}",
                         _token: "{{ csrf_token() }}",
                         koordinat: shape_for_db
+                    },
+                    success: function() {
+                        location.reload();
                     }
                 });
                 

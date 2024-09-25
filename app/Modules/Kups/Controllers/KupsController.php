@@ -110,10 +110,20 @@ class KupsController extends Controller
 	public function show(Request $request, Kups $kups)
 	{
 		$data['kups'] = $kups;
+		$data['kps']  = Kps::find($kups->id_kps);
 
 		$text = 'melihat detail '.$this->title;//.' '.$kups->what;
 		$this->log($request, $text, ['kups.id' => $kups->id]);
 		return view('Kups::kups_detail', array_merge($data, ['title' => $this->title]));
+	}
+
+	public function simpan_batas(Request $request)
+	{
+		$kups = Kups::find($request->id_kups);
+
+		$kups->geojson = $request->koordinat;
+
+		$kups->save();
 	}
 
 	public function edit(Request $request, Kups $kups)

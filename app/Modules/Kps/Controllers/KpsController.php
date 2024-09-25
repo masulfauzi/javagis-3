@@ -91,6 +91,15 @@ class KpsController extends Controller
 		return view('Kps::kps_detail', array_merge($data, ['title' => $this->title]));
 	}
 
+	public function simpan_batas(Request $request)
+	{
+		$kps = Kps::find($request->id_kps);
+
+		$kps->geojson = $request->koordinat;
+
+		$kps->save();
+	}
+
 	public function edit(Request $request, Kps $kps)
 	{
 		$data['kps'] = $kps;
