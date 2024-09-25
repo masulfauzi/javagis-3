@@ -9,6 +9,7 @@ use App\Modules\Kps\Models\Kps;
 use App\Modules\Desa\Models\Desa;
 
 use App\Http\Controllers\Controller;
+use App\Modules\Kups\Models\Kups;
 use Illuminate\Support\Facades\Auth;
 
 class KpsController extends Controller
@@ -83,6 +84,7 @@ class KpsController extends Controller
 	public function show(Request $request, Kps $kps)
 	{
 		$data['kps'] = $kps;
+		$data['kups'] = Kups::whereIdKps($kps->id)->get();
 
 		$text = 'melihat detail '.$this->title;//.' '.$kps->what;
 		$this->log($request, $text, ['kps.id' => $kps->id]);
@@ -93,11 +95,13 @@ class KpsController extends Controller
 	{
 		$data['kps'] = $kps;
 
-		$ref_desa = Desa::all()->pluck('id_kecamatan','id');
 		
+		// $ref_desa = Desa::all()->pluck('id_kecamatan','id');
+		
+		// dd($data);
 		$data['forms'] = array(
 			'nama_kps' => ['Nama Kps', Form::text("nama_kps", $kps->nama_kps, ["class" => "form-control","placeholder" => "", "required" => "required", "id" => "nama_kps"]) ],
-			'id_desa' => ['Desa', Form::select("id_desa", $ref_desa, null, ["class" => "form-control select2"]) ],
+			// 'id_desa' => ['Desa', Form::select("id_desa", $ref_desa, null, ["class" => "form-control select2"]) ],
 			'no_sk' => ['No Sk', Form::text("no_sk", $kps->no_sk, ["class" => "form-control","placeholder" => "", "required" => "required", "id" => "no_sk"]) ],
 			'tgl_sk' => ['Tgl Sk', Form::text("tgl_sk", $kps->tgl_sk, ["class" => "form-control datepicker", "required" => "required", "id" => "tgl_sk"]) ],
 			'luas' => ['Luas', Form::text("luas", $kps->luas, ["class" => "form-control","placeholder" => "", "required" => "required", "id" => "luas"]) ],
@@ -105,7 +109,7 @@ class KpsController extends Controller
 			'koord_y' => ['Koord Y', Form::text("koord_y", $kps->koord_y, ["class" => "form-control","placeholder" => "", "required" => "required", "id" => "koord_y"]) ],
 			
 		);
-
+		
 		$text = 'membuka form edit '.$this->title;//.' '.$kps->what;
 		$this->log($request, $text, ['kps.id' => $kps->id]);
 		return view('Kps::kps_update', array_merge($data, ['title' => $this->title]));

@@ -13,6 +13,16 @@ function deleteConfirm(url){
 	});
 }
 
+function alertCustom(text = "Maaf, fitur belum tersedia"){
+	swal({
+		title: text,
+		// text: "Setelah dihapus, data tidak dapat dikembalikan.",
+		icon: "warning",
+		buttons: alert,
+		dangerMode: false,
+	});
+}
+
 function loadDatePicker(element){
 	if(element == '.datepicker'){
 		comp = {

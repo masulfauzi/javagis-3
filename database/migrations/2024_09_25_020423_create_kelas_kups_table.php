@@ -13,19 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('kps', function (Blueprint $table) {
+        Schema::create('kelas_kups', function (Blueprint $table) {
             $table->uuid('id')->primary();
 
             // your columns here
-            $table->string('nama_kps');
-            $table->uuid('id_desa');
-            $table->foreign('id_desa')->references('id')->on('desa')->onDelete('restrict')->onUpdate('cascade');
-            $table->string('no_sk');
-            $table->date('tgl_sk');
-            $table->integer('luas');
-            $table->string('koord_x');
-            $table->string('koord_y');
-            $table->text('geojson');
+            $table->string('nama_kelas_kups');
             
             $table->timestamps();
             $table->softDeletes();
@@ -42,6 +34,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('kps');
+        Schema::dropIfExists('kelas_kups');
     }
 };

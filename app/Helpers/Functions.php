@@ -50,8 +50,8 @@ if (! function_exists('button')) {
 								: '<button class="btn btn-sm icon icon-left btn-secondary disabled"><i class="fa fa-trash"></i> Delete </button>';
 		}else{
 			$class = "btn-outline-dark";
-			$button = $allowed ? '<a href="'.route($route, $id).'" class="btn btn-sm icon icon-left '.$class.'"><i class="fa fa-arrow-right"></i> '.$title.' </a>' 
-					: '<button class="btn btn-sm icon icon-left btn-secondary disabled"><i class="fa fa-arrow-right"></i> '.$title.' </button>';
+			$button = $allowed ? '<a href="'.route($route, $id).'" class="btn btn-sm icon icon-left '.$class.'"><i class="fa fa-arrow-right"></i> Detail </a>' 
+					: '<button class="btn btn-sm icon icon-left btn-secondary disabled"><i class="fa fa-arrow-right"></i> Detail </button>';
 		}
 		return $button;
     }

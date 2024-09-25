@@ -208,6 +208,7 @@
 
             if (type === 'marker') {
                 document.getElementById('koordinat').value = x; 
+                // var marker = L.marker([51.5, -0.09]).addTo(map);
             }
 
             // if (type === 'polyline') {

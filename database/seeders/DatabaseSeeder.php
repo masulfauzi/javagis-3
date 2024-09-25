@@ -27,6 +27,10 @@ class DatabaseSeeder extends Seeder
         $this->call(KabupatenSeeder::class);
         $this->call(KecamatanSeeder::class);
         $this->call(DesaSeeder::class);
+        $this->call(SkemaSeeder::class);
+        $this->call(KelasSeeder::class);
+        $this->call(BentukKupsSeeder::class);
+        $this->call(KupsSeeder::class);
 
 
 
