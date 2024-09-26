@@ -246,7 +246,7 @@
             foreach($marker as $item_marker)
             {
         ?>
-        var marker = L.marker([{{ $item_marker->koord_y }}, {{ $item_marker->koord_x }}]).addTo(map);
+        var marker = L.marker([{{ $item_marker->koord_y }}, {{ $item_marker->koord_x }}]).addTo(map).bindPopup('{{ $item_marker->nama_survey }}');
         <?php
             }
         }
