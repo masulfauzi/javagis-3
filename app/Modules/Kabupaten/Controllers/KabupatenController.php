@@ -35,6 +35,19 @@ class KabupatenController extends Controller
 		return view('Kabupaten::kabupaten', array_merge($data, ['title' => $this->title]));
 	}
 
+	public function get_kabupaten(Request $request)
+	{
+		$data = [];
+
+        if($request->filled('id_provinsi')){
+            $data = Kabupaten::select("kabupaten.id", "kabupaten.nama_kabupaten")
+								->whereIdProvinsi($request->id_provinsi)
+                        		->get();
+        }
+
+        return response()->json($data);
+	}
+
 	public function create(Request $request)
 	{
 		$ref_provinsi = Provinsi::all()->pluck('id_seksi_wilayah','id');

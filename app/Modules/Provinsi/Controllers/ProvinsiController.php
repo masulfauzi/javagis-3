@@ -35,6 +35,19 @@ class ProvinsiController extends Controller
 		return view('Provinsi::provinsi', array_merge($data, ['title' => $this->title]));
 	}
 
+	public function get_provinsi(Request $request)
+	{
+		$data = [];
+
+        if($request->filled('id_seksi_wilayah')){
+            $data = Provinsi::select("provinsi.id", "provinsi.nama_provinsi")
+								->whereIdSeksiWilayah($request->id_seksi_wilayah)
+                        		->get();
+        }
+
+        return response()->json($data);
+	}
+
 	public function create(Request $request)
 	{
 		$ref_seksi_wilayah = SeksiWilayah::all()->pluck('id_balai_pskl','id');

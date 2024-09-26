@@ -35,6 +35,19 @@ class SeksiWilayahController extends Controller
 		return view('SeksiWilayah::seksiwilayah', array_merge($data, ['title' => $this->title]));
 	}
 
+	public function get_seksi_wilayah(Request $request)
+	{
+		$data = [];
+
+        if($request->filled('id_balai')){
+            $data = SeksiWilayah::select("seksi_wilayah.id", "seksi_wilayah.nama_seksi_wilayah")
+								->whereIdBalaiPskl($request->id_balai)
+                        		->get();
+        }
+
+        return response()->json($data);
+	}
+
 	public function create(Request $request)
 	{
 		$ref_balai_pskl = BalaiPskl::all()->pluck('nama_balai_pskl','id');

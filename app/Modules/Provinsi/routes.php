@@ -4,6 +4,10 @@ use Illuminate\Support\Facades\Route;
 use App\Modules\Provinsi\Controllers\ProvinsiController;
 
 Route::controller(ProvinsiController::class)->middleware(['web','auth'])->name('provinsi.')->group(function(){
+	// custom routes
+	Route::get('/provinsi/get_provinsi', 'get_provinsi')->name('get_provinsi.index');
+	
+	
 	Route::get('/provinsi', 'index')->name('index');
 	Route::get('/provinsi/data', 'data')->name('data.index');
 	Route::get('/provinsi/create', 'create')->name('create');

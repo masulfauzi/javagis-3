@@ -9,7 +9,11 @@ use App\Modules\Kps\Models\Kps;
 use App\Modules\Desa\Models\Desa;
 
 use App\Http\Controllers\Controller;
+use App\Modules\BalaiPskl\Models\BalaiPskl;
+use App\Modules\Kabupaten\Models\Kabupaten;
 use App\Modules\Kups\Models\Kups;
+use App\Modules\Provinsi\Models\Provinsi;
+use App\Modules\SeksiWilayah\Models\SeksiWilayah;
 use Illuminate\Support\Facades\Auth;
 
 class KpsController extends Controller
@@ -25,12 +29,52 @@ class KpsController extends Controller
 
 	public function index(Request $request)
 	{
-		$query = Kps::query();
+		$query = Kps::join('desa as des', 'des.id', '=', 'kps.id_desa')
+					->join('kecamatan as kec', 'kec.id', '=', 'des.id_kecamatan')
+					->join('kabupaten as kab', 'kab.id', '=', 'kec.id_kabupaten')
+					->join('provinsi as prov', 'prov.id', '=', 'kab.id_provinsi')
+					->join('seksi_wilayah as seksi', 'seksi.id', '=', 'prov.id_seksi_wilayah')
+					->join('balai_pskl as balai', 'balai.id', '=', 'seksi.id_balai_pskl');
+
 		if($request->has('search')){
 			$search = $request->get('search');
 			// $query->where('name', 'like', "%$search%");
 		}
+
+		if($request->has('id_balai'))
+		{
+			$query->where('balai.id', $request->get('id_balai'));
+			$data['seksi_wilayah'] = SeksiWilayah::whereIdBalaiPskl($request->get('id_balai'))->pluck('nama_seksi_wilayah', 'id');
+			// dd($data['seksi_wilayah']);
+		}
+
+		if($request->has('id_seksi_wilayah') && $request->get('id_seksi_wilayah') != '')
+		{
+			$query->where('seksi.id', $request->get('id_seksi_wilayah'));
+			$data['provinsi'] = Provinsi::whereIdSeksiWilayah($request->get('id_seksi_wilayah'))->pluck('nama_provinsi', 'id');
+		}
+
+		if($request->has('id_provinsi') && $request->get('id_provinsi') != '')
+		{
+			$query->where('prov.id', $request->get('id_provinsi'));
+			$data['kabupaten'] = Kabupaten::whereIdProvinsi($request->get('id_provinsi'))->pluck('nama_kabupaten', 'id');
+		}
+
+		if($request->has('id_kabupaten') && $request->get('id_kabupaten') != '')
+		{
+			$query->where('kab.id', $request->get('id_kabupaten'));
+		}
+
+		$data['selected'] = [
+			'id_balai'	=> $request->get('id_balai'),
+			'id_seksi_wilayah'	=> $request->get('id_seksi_wilayah'),
+			'id_provinsi'	=> $request->get('id_provinsi'),
+			'id_kabupaten'	=> $request->get('id_kabupaten'),
+		];
+
 		$data['data'] = $query->paginate(10)->withQueryString();
+		$data['balai'] = BalaiPskl::all()->pluck('nama_balai_pskl', 'id');
+		$data['balai']->prepend('-PILIH SALAH SATU-', '');
 
 		$this->log($request, 'melihat halaman manajemen data '.$this->title);
 		return view('Kps::kps', array_merge($data, ['title' => $this->title]));
