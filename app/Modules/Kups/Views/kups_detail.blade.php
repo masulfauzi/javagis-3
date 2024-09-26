@@ -240,7 +240,7 @@
         
             echo "L.geoJSON(layerKps, {
                         style: myStyle
-                    }).addTo(map).bindPopup('Area KPS');";
+                    }).addTo(map).bindPopup('Area KPS $kps->nama_kps');";
         }
         
         ?>
@@ -249,14 +249,14 @@
         
         if ($kups->geojson) {
             echo "var layerKups = $kups->geojson;";
-            echo "L.geoJSON(layerKups).addTo(map).bindPopup('Area KUPS');";
+            echo "L.geoJSON(layerKups).addTo(map).bindPopup('Area KUPS $kups->nama_kups');";
         }
         
         ?>
 
 
 
-        var marker = L.marker([{{ $kups->koord_y }}, {{ $kups->koord_x }}]).addTo(map).bindPopup('Lokasi KUPS');
+        var marker = L.marker([{{ $kups->koord_y }}, {{ $kups->koord_x }}]).addTo(map).bindPopup('Lokasi KUPS {{ $kups->nama_kups }}');
 
         
 
