@@ -113,6 +113,64 @@
 
             </div>
         </section>
+
+        <section class="section">
+            <div class="card">
+                <h6 class="card-header">
+                    Tabel Data {{ $title }}
+                </h6>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-9">
+                            <form action="{{ route('survey.index') }}" method="get">
+                                <div class="form-group col-md-3 has-icon-left position-relative">
+                                    <input type="text" class="form-control" value="{{ request()->get('search') }}" name="search" placeholder="Search">
+                                    <div class="form-control-icon"><i class="fa fa-search"></i></div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-3">  
+                            {!! button('survey.create', $title) !!}  
+                        </div>
+                    </div>
+                    @include('include.flash')
+                    <div class="table-responsive-md col-12">
+                        <table class="table" id="table1">
+                            <thead>
+                                <tr>
+                                    <th width="15">No</th>
+                                    <td>Kups</td>
+                                    <td>Type</td>
+                                    
+                                    <th width="20%">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php $no = 1; @endphp
+                                @forelse ($survey as $item)
+                                    <tr>
+                                        <td>{{ $no++ }}</td>
+                                        <td>{{ $item->nama_survey }}</td>
+                                        <td>{{ $item->type }}</td>
+                                        
+                                        <td>
+                                            {!! button('survey.show','', $item->id) !!}
+                                            {{-- {!! button('survey.edit', $title, $item->id) !!} --}}
+                                            {{-- {!! button('survey.destroy', $title, $item->id) !!} --}}
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="4" class="text-center"><i>No data.</i></td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+    
+        </section>
     </div>
 
     <!-- Modal -->

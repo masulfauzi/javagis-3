@@ -118,8 +118,10 @@ class SurveyController extends Controller
 	public function show(Request $request, Survey $survey)
 	{
 		$data['survey'] = $survey;
-		$data['koord_survey'] = KoordSurvey::whereIdSurvey($survey->id);
-		
+		$data['koord_survey'] = KoordSurvey::whereIdSurvey($survey->id)->orderBy('index')->get();
+
+		// dd($data['koord_survey']);
+
 
 		$text = 'melihat detail '.$this->title;//.' '.$survey->what;
 		$this->log($request, $text, ['survey.id' => $survey->id]);

@@ -56,23 +56,43 @@ class KoordSurveyController extends Controller
 
 	function store(Request $request)
 	{
-		$this->validate($request, [
-			'id_survey' => 'required',
-			'koord_x' => 'required',
-			'koord_y' => 'required',
-			'index' => 'required',
-			'foto' => 'required',
-			'ket_lokasi' => 'required',
-			'ket_objek' => 'required',
+		// $this->validate($request, [
+		// 	'id_survey' => 'required',
+		// 	'koord_x' => 'required',
+		// 	'koord_y' => 'required',
+		// 	'index' => 'required',
+		// 	'foto' => 'required',
+		// 	'ket_lokasi' => 'required',
+		// 	'ket_objek' => 'required',
 			
-		]);
+		// ]);
+
+		$cek_koord = KoordSurvey::whereIdSurvey($request->get('id_survey'))->orderBy('created_at','DESC')->first();
+
+		if($cek_koord)
+		{
+			$index = $cek_koord->index + 1;
+		}
+		else{
+			$index = 0;
+		}
+
+		if($request->has('foto'))
+		{
+			$foto = time().'.'.$request->foto->extension();  
+
+			$request->foto->move(public_path('uploads/markers/'), $foto);
+		}
+		else{
+			$foto = '';
+		}
 
 		$koordsurvey = new KoordSurvey();
 		$koordsurvey->id_survey = $request->input("id_survey");
 		$koordsurvey->koord_x = $request->input("koord_x");
 		$koordsurvey->koord_y = $request->input("koord_y");
-		$koordsurvey->index = $request->input("index");
-		$koordsurvey->foto = $request->input("foto");
+		$koordsurvey->index = $index;
+		$koordsurvey->foto = $foto;
 		$koordsurvey->ket_lokasi = $request->input("ket_lokasi");
 		$koordsurvey->ket_objek = $request->input("ket_objek");
 		
@@ -81,7 +101,7 @@ class KoordSurveyController extends Controller
 
 		$text = 'membuat '.$this->title; //' baru '.$koordsurvey->what;
 		$this->log($request, $text, ['koordsurvey.id' => $koordsurvey->id]);
-		return redirect()->route('koordsurvey.index')->with('message_success', 'Koord Survey berhasil ditambahkan!');
+		return redirect()->route('survey.show', $request->get('id_survey'))->with('message_success', 'Koord Survey berhasil ditambahkan!');
 	}
 
 	public function show(Request $request, KoordSurvey $koordsurvey)
