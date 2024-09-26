@@ -200,21 +200,16 @@
         $(document).ready(function() {
 
             $("#tambahkoord").on("click", function() {
-                navigator.geolocation.getCurrentPosition(position => {
-                    const {
-                        coords: {
-                            latitude,
-                            longitude
-                        }
-                    } = position;
+                // navigator.geolocation.getCurrentPosition(position => {
+                //     const {
+                //         coords: {
+                //             latitude,
+                //             longitude
+                //         }
+                //     } = position;
 
-                    document.getElementById('koord_x').value = latitude;
-                    document.getElementById('koord_y').value = longitude;
-
-                    // console.log(latitude, longitude);
-                    $('#exampleModal').modal('show');
-
-                })
+                // })
+                $('#exampleModal').modal('show');
             });
 
         });
@@ -263,6 +258,9 @@
             var lat = position.coords.latitude
             var long = position.coords.longitude
             var accuracy = position.coords.accuracy
+
+            document.getElementById('koord_x').value = lat;
+            document.getElementById('koord_y').value = long;
 
             if (marker) {
                 map.removeLayer(marker)
