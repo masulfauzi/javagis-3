@@ -6,6 +6,7 @@ use App\Modules\Kups\Controllers\KupsController;
 Route::controller(KupsController::class)->middleware(['web','auth'])->name('kups.')->group(function(){
 	// route custom
 	Route::post('/kups/simpan_batas', 'simpan_batas')->name('simpan_batas.store');
+	Route::get('/kups/survey/{kups}', 'survey')->name('survey.index');
 
 	Route::get('/kups', 'index')->name('index');
 	Route::get('/kups/data', 'data')->name('data.index');

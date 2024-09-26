@@ -3,30 +3,7 @@
 @section('page-css')
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-    <style>
-        #refreshButton {
-            display: flex;
-            align-items: center;
-            position: absolute;
-            top: 435px;
-            right: 11px;
-            width: 32px;
-            height: 32px;
-            background-color: white;
-            border-radius: 3px;
-            border-color: gray;
-            border-style: solid;
-            border-width: 1px 1px 1px 1px;
-            opacity: 0.6;
-            text-align: center;
-            z-index: 500;
-        }
-
-        #refreshButton:hover {
-            opacity: 0.8;
-            cursor: pointer;
-        }
-    </style>
+    
 @endsection
 
 
@@ -105,6 +82,10 @@
                                 <li class="nav-item" role="presentation">
                                     <a class="nav-link active" id="detail_kups-tab" data-bs-toggle="tab" href="#detail_kups"
                                         role="tab" aria-controls="detail_kups" aria-selected="true">Detail KUPS</a>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link" id="survey-tab" href="{{ route('kups.survey.index',$kups->id) }}"
+                                        role="tab" aria-controls="survey" aria-selected="true">Survey</a>
                                 </li>
                             </ul>
                             <div class="tab-content" id="myTabContent">
