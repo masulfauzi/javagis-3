@@ -29,7 +29,8 @@ class KpsController extends Controller
 
 	public function index(Request $request)
 	{
-		$query = Kps::join('desa as des', 'des.id', '=', 'kps.id_desa')
+		$query = Kps::select('kps.*')
+					->join('desa as des', 'des.id', '=', 'kps.id_desa')
 					->join('kecamatan as kec', 'kec.id', '=', 'des.id_kecamatan')
 					->join('kabupaten as kab', 'kab.id', '=', 'kec.id_kabupaten')
 					->join('provinsi as prov', 'prov.id', '=', 'kab.id_provinsi')

@@ -215,7 +215,7 @@
 
             echo "L.geoJSON(layerKps, {
                 style: myStyle
-            }).addTo(map);";
+            }).addTo(map).bindPopup('Area KPS');";
         }
 
         ?>
@@ -225,14 +225,14 @@
         if($kups->geojson)
         {
             echo "var layerKups = $kups->geojson;";
-            echo "L.geoJSON(layerKups).addTo(map);";
+            echo "L.geoJSON(layerKups).addTo(map).bindPopup('Area KUPS');";
         }
 
         ?>
 
 
 
-        var marker = L.marker([{{ $kups->koord_y }}, {{ $kups->koord_x }}]).addTo(map);
+        var marker = L.marker([{{ $kups->koord_y }}, {{ $kups->koord_x }}]).addTo(map).bindPopup('Lokasi KUPS');
 
         L.DomEvent.on(document.getElementById('refreshButton'), 'click', function(){
                 map.locate({setView: true, maxZoom: 20});

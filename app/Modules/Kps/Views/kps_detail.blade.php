@@ -228,12 +228,12 @@
         if($kps->geojson)
         {
             echo "var geojsonFeature = $kps->geojson;";
-            echo "L.geoJSON(geojsonFeature).addTo(map);";
+            echo "L.geoJSON(geojsonFeature).addTo(map).bindPopup('Area KPS');";
         }
 
         ?>
 
-        var marker = L.marker([{{ $kps->koord_y }}, {{ $kps->koord_x }}]).addTo(map);
+        var marker = L.marker([{{ $kps->koord_y }}, {{ $kps->koord_x }}]).addTo(map).bindPopup('Lokasi KPS');
 
         var drawnItems = new L.FeatureGroup();
         map.addLayer(drawnItems);
