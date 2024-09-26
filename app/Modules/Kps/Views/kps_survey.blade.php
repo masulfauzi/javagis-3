@@ -44,7 +44,7 @@
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
                             <li class="breadcrumb-item"><a href="{{ route('kups.index') }}">{{ $title }}</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">{{ $kups->nama }}</li>
+                            <li class="breadcrumb-item active" aria-current="page">{{ $kps->nama }}</li>
                         </ol>
                     </nav>
                 </div>
@@ -54,7 +54,7 @@
         <section class="section">
             <div class="card">
                 <h6 class="card-header">
-                    Detail Data {{ $title }}: {{ $kups->nama }}
+                    Detail Data {{ $title }}: {{ $kps->nama }}
                 </h6>
                 <div class="card-body">
                     <div class="row">
@@ -64,26 +64,20 @@
                                     <p>Nama Kups</p>
                                 </div>
                                 <div class='col-lg-10'>
-                                    <p class='fw-bold'>{{ $kups->nama_kups }}</p>
+                                    <p class='fw-bold'>{{ $kps->nama_kps }}</p>
                                 </div>
                                 <div class='col-lg-2'>
                                     <p>Kps</p>
                                 </div>
                                 <div class='col-lg-10'>
-                                    <p class='fw-bold'>{{ $kups->kps->nama_kps }}</p>
+                                    <p class='fw-bold'>{{ $kps->nama_kps }}</p>
                                 </div>
 
                                 <div class='col-lg-2'>
                                     <p>Wilayah</p>
                                 </div>
                                 <div class='col-lg-10'>
-                                    <p class='fw-bold'>{{ $kups->desa->nama_desa }} -
-                                        {{ $kups->desa->kecamatan->nama_kecamatan }} -
-                                        {{ $kups->desa->kecamatan->kabupaten->nama_kabupaten }} -
-                                        {{ $kups->desa->kecamatan->kabupaten->provinsi->nama_provinsi }} -
-                                        {{ $kups->desa->kecamatan->kabupaten->provinsi->seksiWilayah->nama_seksi_wilayah }}
-                                        -
-                                        {{ $kups->desa->kecamatan->kabupaten->provinsi->seksiWilayah->balaiPskl->nama_balai_pskl }}
+                                    <p class='fw-bold'>{{ $kps->desa->nama_desa }} - {{ $kps->desa->kecamatan->nama_kecamatan }} - {{ $kps->desa->kecamatan->kabupaten->nama_kabupaten }} - {{ $kps->desa->kecamatan->kabupaten->provinsi->nama_provinsi }} - {{ $kps->desa->kecamatan->kabupaten->provinsi->seksiWilayah->nama_seksi_wilayah }} - {{ $kps->desa->kecamatan->kabupaten->provinsi->seksiWilayah->balaiPskl->nama_balai_pskl }}
                                     </p>
                                 </div>
 
@@ -209,7 +203,7 @@
             doubleClickZoom: false,
             layers: [osm],
             cursor: true
-        }).setView([{{ $kups->koord_y }}, {{ $kups->koord_x }}], 13);;
+        }).setView([{{ $kps->koord_y }}, {{ $kps->koord_x }}], 13);;
 
         map.addLayer(osm);
 
@@ -231,14 +225,7 @@
         
         ?>
 
-        <?php
         
-        if ($kups->geojson) {
-            echo "var layerKups = $kups->geojson;";
-            echo "L.geoJSON(layerKups).addTo(map).bindPopup('Area KUPS $kups->nama_kups');";
-        }
-        
-        ?>
 
         <?php 
         if($marker)
@@ -260,14 +247,14 @@
             });
 
             $.ajax({
-                url: "{{ route('survey.form_survey.create', $kups->id) }}",
+                url: "{{ route('survey.form_survey.create', $kps->id) }}",
                 type: "GET",
                 dataType: "html",
                 success: function(html) {
                     $("#modal-body").html(html);
                     // $("#geojson").val(shape_for_db);
                     // document.getElementById('koordinat').value = shape_for_db;
-                    document.getElementById('id_kups').value = "{{ $kups->id }}";
+                    document.getElementById('id_kps').value = "{{ $kps->id }}";
                     document.getElementById('type').value = "polygon";
 
                     $('#exampleModal').modal('show');
@@ -329,14 +316,14 @@
             if (type === 'marker') {
 
                 $.ajax({
-                    url: "{{ route('survey.form_marker.create', $kups->id) }}",
+                    url: "{{ route('survey.form_marker.create', $kps->id) }}",
                     type: "GET",
                     dataType: "html",
                     success: function(html) {
                         $("#modal-body").html(html);
                         // $("#geojson").val(shape_for_db);
                         document.getElementById('koordinat').value = shape_for_db;
-                        document.getElementById('id_kups').value = "{{ $kups->id }}";
+                        document.getElementById('id_kups').value = "{{ $kps->id }}";
                         document.getElementById('type').value = "marker";
 
                         $('#exampleModal').modal('show');
@@ -349,7 +336,7 @@
                 //     url: "{{ route('kups.simpan_batas.store') }}",
                 //     type: "POST",
                 //     data: {
-                //         id_kups: "{{ $kups->id }}",
+                //         id_kups: "{{ $kps->id }}",
                 //         _token: "{{ csrf_token() }}",
                 //         koordinat: shape_for_db
                 //     },

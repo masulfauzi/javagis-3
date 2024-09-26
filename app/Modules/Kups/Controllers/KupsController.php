@@ -118,20 +118,7 @@ class KupsController extends Controller
 		return view('Kups::kups_detail', array_merge($data, ['title' => $this->title]));
 	}
 
-	public function survey(Request $request, Kups $kups)
-	{
-		$data['kups'] = $kups;
-		$data['kps']  = Kps::find($kups->id_kps);
-		$data['marker'] = Survey::whereIdKups($kups->id)
-								->join('koord_survey', 'koord_survey.id_survey','=','survey.id')
-								->where('survey.type', 'marker')
-								->get();
-		$data['survey'] = Survey::whereIdKups($kups->id)->get();
-
-		$text = 'melihat detail '.$this->title;//.' '.$kups->what;
-		$this->log($request, $text, ['kups.id' => $kups->id]);
-		return view('Kups::kups_survey', array_merge($data, ['title' => $this->title]));
-	}
+	
 
 	public function simpan_batas(Request $request)
 	{

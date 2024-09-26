@@ -78,6 +78,10 @@
                                     <a class="nav-link" id="daftar_kups-tab" data-bs-toggle="tab" href="#daftar_kups"
                                         role="tab" aria-controls="daftar_kups" aria-selected="false">Daftar KUPS</a>
                                 </li>
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link" id="survey-tab" href="{{ route('kps.survey.index',$kps->id) }}"
+                                        role="tab" aria-controls="survey" aria-selected="true">Survey</a>
+                                </li>
                             </ul>
                             <div class="tab-content" id="myTabContent">
                                 <div class="tab-pane fade show active" id="detail_kps" role="tabpanel"

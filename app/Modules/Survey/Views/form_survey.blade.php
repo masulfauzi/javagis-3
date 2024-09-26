@@ -1,7 +1,7 @@
 <form action="{{ route('survey.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
     {{-- {!! Form::hidden('koordinat', null, ["id" => "koordinat"]) !!} --}}
-    {!! Form::hidden('id_kups', null, ["id" => "id_kups"]) !!}
+    {!! Form::hidden('id_kps', null, ["id" => "id_kps"]) !!}
     {!! Form::hidden('type', 'polygon', ["id" => "type"]) !!}
     <div class="row">
         <div class="col-md-3 form-group">

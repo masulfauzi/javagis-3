@@ -83,10 +83,7 @@
                                     <a class="nav-link active" id="detail_kups-tab" data-bs-toggle="tab" href="#detail_kups"
                                         role="tab" aria-controls="detail_kups" aria-selected="true">Detail KUPS</a>
                                 </li>
-                                <li class="nav-item" role="presentation">
-                                    <a class="nav-link" id="survey-tab" href="{{ route('kups.survey.index',$kups->id) }}"
-                                        role="tab" aria-controls="survey" aria-selected="true">Survey</a>
-                                </li>
+                                
                             </ul>
                             <div class="tab-content" id="myTabContent">
                                 <div class="tab-pane fade show active" id="detail_kups" role="tabpanel"

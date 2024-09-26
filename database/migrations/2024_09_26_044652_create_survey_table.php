@@ -18,8 +18,8 @@ return new class extends Migration
 
             // your columns here
             $table->string('nama_survey');
-            $table->uuid('id_kups');
-            $table->foreign('id_kups')->references('id')->on('kups')->onDelete('restrict')->onUpdate('cascade');
+            $table->uuid('id_kps');
+            $table->foreign('id_kps')->references('id')->on('kps')->onDelete('restrict')->onUpdate('cascade');
             $table->string('type');
             
             $table->timestamps();

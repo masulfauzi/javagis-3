@@ -10,6 +10,7 @@ use App\Modules\Kups\Models\Kups;
 
 use App\Http\Controllers\Controller;
 use App\Modules\KoordSurvey\Models\KoordSurvey;
+use App\Modules\Kps\Models\Kps;
 use Illuminate\Support\Facades\Auth;
 
 class SurveyController extends Controller
@@ -60,14 +61,14 @@ class SurveyController extends Controller
 		// dd($request);
 
 		$this->validate($request, [
-			'id_kups' => 'required',
+			'id_kps' => 'required',
 			'type' => 'required',
 			// 'koordinat' => 'required',
 			'nama' => 'required',
 		]);
 
 		$survey = new Survey();
-		$survey->id_kups = $request->input("id_kups");
+		$survey->id_kps = $request->input("id_kps");
 		$survey->type = $request->input("type");
 		$survey->nama_survey = $request->input("nama");
 		
@@ -119,6 +120,7 @@ class SurveyController extends Controller
 	{
 		$data['survey'] = $survey;
 		$data['koord_survey'] = KoordSurvey::whereIdSurvey($survey->id)->orderBy('index')->get();
+		$data['kps']	= Kps::find($survey->id_kps);
 
 		// dd($data['koord_survey']);
 

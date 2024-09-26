@@ -5,8 +5,8 @@ use App\Modules\Survey\Controllers\SurveyController;
 
 Route::controller(SurveyController::class)->middleware(['web','auth'])->name('survey.')->group(function(){
 	// custom routes
-	Route::get('/survey/form_marker/{kups}', 'form_marker')->name('form_marker.create');
-	Route::get('/survey/form_survey/{kups}', 'form_survey')->name('form_survey.create');
+	Route::get('/survey/form_marker/{kps}', 'form_marker')->name('form_marker.create');
+	Route::get('/survey/form_survey/{kps}', 'form_survey')->name('form_survey.create');
 
 	
 	

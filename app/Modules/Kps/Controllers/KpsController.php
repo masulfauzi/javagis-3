@@ -14,6 +14,7 @@ use App\Modules\Kabupaten\Models\Kabupaten;
 use App\Modules\Kups\Models\Kups;
 use App\Modules\Provinsi\Models\Provinsi;
 use App\Modules\SeksiWilayah\Models\SeksiWilayah;
+use App\Modules\Survey\Models\Survey;
 use Illuminate\Support\Facades\Auth;
 
 class KpsController extends Controller
@@ -79,6 +80,21 @@ class KpsController extends Controller
 
 		$this->log($request, 'melihat halaman manajemen data '.$this->title);
 		return view('Kps::kps', array_merge($data, ['title' => $this->title]));
+	}
+
+	public function survey(Request $request, Kps $kps)
+	{
+		// dd($kps);
+		$data['kps']  = $kps;
+		$data['marker'] = Survey::whereIdKps($kps->id)
+								->join('koord_survey', 'koord_survey.id_survey','=','survey.id')
+								->where('survey.type', 'marker')
+								->get();
+		$data['survey'] = Survey::whereIdKps($kps->id)->get();
+
+		$text = 'melihat detail '.$this->title;//.' '.$kups->what;
+		$this->log($request, $text, ['kps.id' => $kps->id]);
+		return view('Kps::kps_survey', array_merge($data, ['title' => $this->title]));
 	}
 
 	public function create(Request $request)
