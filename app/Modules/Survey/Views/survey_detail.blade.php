@@ -200,15 +200,7 @@
         $(document).ready(function() {
 
             $("#tambahkoord").on("click", function() {
-                // navigator.geolocation.getCurrentPosition(position => {
-                //     const {
-                //         coords: {
-                //             latitude,
-                //             longitude
-                //         }
-                //     } = position;
-
-                // })
+                
                 $('#exampleModal').modal('show');
             });
 
@@ -230,17 +222,35 @@
         if ($kps->geojson) {
             echo "var layerKps = $kps->geojson;";
         
-            echo 'var myStyle = {
-                                                        "color": "#ff7800",
-                                                        "weight": 5,
-                                                        "opacity": 0.65
-                                                    };';
+            echo 'var myStyle = {"color": "#ff7800","weight": 5,"opacity": 0.65};';
         
-            echo "L.geoJSON(layerKps, {
-                                                        style: myStyle
-                                                    }).addTo(map).bindPopup('Area KPS $kps->nama_kps');";
+            echo "L.geoJSON(layerKps, {style: myStyle}).addTo(map).bindPopup('Area KPS $kps->nama_kps');";
         }
         
+        ?>
+
+
+        <?php 
+        if($koord_survey)
+        {
+        ?>
+            var hasil_survey = {"type":"Feature",
+                                "properties":{},
+                                "geometry":{
+                                    "type":"Polygon",
+                                    "coordinates":[
+                                        [
+                                            @foreach($koord_survey as $item)
+                                                [{{ $item->koord_x }},{{ $item->koord_y }}],
+                                            @endforeach
+                                        ]
+                                    ]
+                                }
+                            };
+            
+            L.geoJSON(hasil_survey).addTo(map).bindPopup('Hasil Survey');
+        <?php
+        }
         ?>
 
         if (!navigator.geolocation) {
