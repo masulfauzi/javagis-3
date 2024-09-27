@@ -241,7 +241,7 @@
                                     "coordinates":[
                                         [
                                             @foreach($koord_survey as $item)
-                                                [{{ $item->koord_x }},{{ $item->koord_y }}],
+                                                [{{ $item->koord_y }},{{ $item->koord_x }}],
                                             @endforeach
                                         ]
                                     ]
