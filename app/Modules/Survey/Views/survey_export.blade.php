@@ -125,7 +125,7 @@
 
     <script>
         // OSM layers
-        var osmUrl = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
+        var osmUrl = 'https://{s}.tile.osm.org/{z}/{x}/{y}.png';
         var osmAttrib = 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
         var osm = new L.TileLayer(osmUrl, {
             attribution: osmAttrib
