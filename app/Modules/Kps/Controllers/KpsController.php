@@ -82,6 +82,8 @@ class KpsController extends Controller
 		return view('Kps::kps', array_merge($data, ['title' => $this->title]));
 	}
 
+	
+
 	public function survey(Request $request, Kps $kps)
 	{
 		// dd($kps);

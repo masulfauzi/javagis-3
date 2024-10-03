@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use App\Modules\KoordSurvey\Models\KoordSurvey;
 use App\Modules\Kps\Models\Kps;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class SurveyController extends Controller
 {
@@ -35,6 +36,45 @@ class SurveyController extends Controller
 
 		$this->log($request, 'melihat halaman manajemen data '.$this->title);
 		return view('Survey::survey', array_merge($data, ['title' => $this->title]));
+	}
+
+	public function save_image(Request $request)
+	{
+		$fileName = time().'.'.$request->image->extension();  
+
+        $request->image->move(public_path('export_image/'), $fileName);
+
+		$survey = Survey::find($request->input('id_survey'));
+
+		$survey->image = $fileName;
+
+		$survey->save();
+
+		return json_encode(['status' => true]);
+	}
+
+	public function print(Request $request, Survey $survey)
+	{
+		// dd(Auth::user()->name);
+
+		$data['survey'] = $survey;
+
+		// return view('Survey::survey_print', $data);
+		$pdf = Pdf::loadView('Survey::survey_print', $data);
+    	return $pdf->download('hasil-survey.pdf');
+	}
+
+	public function export_survey(Request $request, Survey $survey)
+	{
+		$data['survey'] = $survey;
+		$data['kps'] = Kps::find($survey->id_kps);
+		$data['koord_survey'] = KoordSurvey::whereIdSurvey($survey->id)->orderBy('index')->get();
+
+		// dd($data['koord_survey']);
+
+		$text = 'melihat detail '.$this->title;//.' '.$kups->what;
+		$this->log($request, $text, ['survey.id' => $survey->id]);
+		return view('Survey::survey_export', array_merge($data, ['title' => $this->title]));
 	}
 
 	public function form_marker(Request $request, Kups $kups)

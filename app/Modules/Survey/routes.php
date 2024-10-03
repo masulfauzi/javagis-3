@@ -7,6 +7,9 @@ Route::controller(SurveyController::class)->middleware(['web','auth'])->name('su
 	// custom routes
 	Route::get('/survey/form_marker/{kps}', 'form_marker')->name('form_marker.create');
 	Route::get('/survey/form_survey/{kps}', 'form_survey')->name('form_survey.create');
+	Route::get('/survey/export/{survey}', 'export_survey')->name('export.show');
+	Route::post('/survey/save_image', 'save_image')->name('save_image.store');
+	Route::get('/survey/print/{survey}', 'print')->name('print.show');
 
 	
 	
