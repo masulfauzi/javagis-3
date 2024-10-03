@@ -146,6 +146,7 @@ class KpsController extends Controller
 	{
 		$data['kps'] = $kps;
 		$data['kups'] = Kups::whereIdKps($kps->id)->get();
+		$data['survey'] = Survey::whereIdKps($kps->id)->get();
 
 		$text = 'melihat detail '.$this->title;//.' '.$kps->what;
 		$this->log($request, $text, ['kps.id' => $kps->id]);

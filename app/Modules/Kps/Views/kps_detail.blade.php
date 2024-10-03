@@ -116,12 +116,9 @@
                                                                         <div class="form-control">{{ $kps->luas }} Ha
                                                                         </div>
                                                                     </div>
-                                                                    <div class="col-md-2">
-                                                                        <label for="password-horizontal">Maps</label>
-                                                                    </div>
-                                                                    <div class="col-md-10">
+                                                                    <div class="col-md-12">
                                                                         <div id="map"
-                                                                            style="width: 100%; height: 400px;"></div>
+                                                                            style="width: 100%; height: 600px;"></div>
                                                                     </div>
 
 
@@ -209,111 +206,97 @@
 @section('page-js')
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.js"></script>
 
     <script>
-        // OSM layers
-        var osmUrl = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
-        var osmAttrib = 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
-        var osm = new L.TileLayer(osmUrl, {
-            attribution: osmAttrib
+
+        
+
+        
+        
+
+        var littleton = L.marker([39.61, -105.02]).bindPopup('This is Littleton, CO.'),
+            denver    = L.marker([39.74, -104.99]).bindPopup('This is Denver, CO.'),
+            aurora    = L.marker([39.73, -104.8]).bindPopup('This is Aurora, CO.'),
+            golden    = L.marker([39.77, -105.23]).bindPopup('This is Golden, CO.');
+
+        var cities = L.layerGroup([littleton, denver, aurora, golden]);
+
+        var osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
         });
+
+        var osmHOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors, Tiles style by Humanitarian OpenStreetMap Team hosted by OpenStreetMap France'});
 
         var map = L.map('map', {
-            doubleClickZoom: false,
-            layers: [osm],
-            cursor: true
-        }).setView([{{ $kps->koord_y }}, {{ $kps->koord_x }}], 13);;
+            center: [{{ $kps->koord_y }}, {{ $kps->koord_x }}],
+            zoom: 12,
+            layers: [osm, cities]
+        });
 
-        map.addLayer(osm);
+        
 
-        <?php
-
-        if($kps->geojson)
-        {
-            echo "var geojsonFeature = $kps->geojson;";
-            echo "L.geoJSON(geojsonFeature).addTo(map).bindPopup('Area KPS $kps->nama_kps');";
-        }
-
+        <?php 
+            if($kps->geojson)
+            {
+                echo "var map_kps = $kps->geojson;";
+                echo "L.geoJSON(map_kps).addTo(map).bindPopup('Area KPS $kps->nama_kps');";
+            }
         ?>
 
-        var marker = L.marker([{{ $kps->koord_y }}, {{ $kps->koord_x }}]).addTo(map).bindPopup('Lokasi KPS {{ $kps->nama_kps }}');
+        
 
-        var drawnItems = new L.FeatureGroup();
-        map.addLayer(drawnItems);
-        var drawControl = new L.Control.Draw({
-            position: 'bottomright',
-            draw: {
-                polygon: true,
-                marker: false,
-                polyline: false,
-                rectangle: false,
-                circle: false
-            }
-        });
-        map.addControl(drawControl);
+        var baseMaps = {
+            "OpenStreetMap": osm,
+            "OpenStreetMap.HOT": osmHOT
+        };
 
-        map.on('draw:created', function(e) {
-            // var type = e.layerType;
-            var layer = e.layer;
-            var type = e.layerType;
+        var overlayMaps = {
+            "Cities": littleton
+        };
 
-            var shape = layer.toGeoJSON()
-            var shape_for_db = JSON.stringify(shape);
-            // const myObj = JSON.parse(shape_for_db);
-            // var x = myObj["geometry"]["coordinates"];
+        var layerControl = L.control.layers(baseMaps, overlayMaps).addTo(map);
 
+        <?php
+            $no = 1;
 
+            if(count($survey) > 0)
+            {
+                foreach($survey as $item_survey)
+                {
+                    $koord_survey = \App\Modules\KoordSurvey\Models\KoordSurvey::whereIdSurvey($item_survey->id)->orderBy('index')->get();
 
-            if (type === 'polygon') {
-                // document.getElementById('koordinat').value = x;
-                // var marker = L.marker([51.5, -0.09]).addTo(map);
+        ?>
+                    var koord_{{ $no }} = {"type":"Feature",
+                        "properties":{},
+                        "geometry":{
+                            "type":"Polygon",
+                            "coordinates":[
+                                [
+                                    @foreach($koord_survey as $item)
+                                    [{{ $item->koord_y }},{{ $item->koord_x }}],
+                                    @endforeach
+                                ]
+                            ]
+                        }
+                    };
 
-                // console.log(shape_for_db);
+                    var hasil_survey_{{ $no }} = L.geoJSON(koord_{{ $no }}).bindPopup("{{ $item_survey->nama_survey }}");
 
-                $.ajax({
-                    url: "{{ route('kps.simpan_batas.store') }}",
-                    type: "POST",
-                    data: {
-                        id_kps: "{{ $kps->id }}",
-                        _token: "{{ csrf_token() }}",
-                        koordinat: shape_for_db
-                    },
-                    success: function() {
-                        location.reload();
-                    }
-                });
-                
-            }
-
-            // if (type === 'polyline') {
-            //     var coords = layer.getLatLngs();
-            //     var seeArea = 0;
-            //     for (var i = 0; i < coords.length - 1; i++) {
-            //         seeArea += coords[i].distanceTo(coords[i + 1]);
-            //     }
-            // } else if (type === 'rectangle') {
-            //     var seeArea = L.GeometryUtil.geodesicArea(layer.getLatLngs()[0]);
-            //     // console.log(seeArea);
-            // } else if (type === 'polygon') {
-            //     var seeArea = L.GeometryUtil.geodesicArea(layer.getLatLngs()[0]);
-            //     // console.log(seeArea);
-            // }
-
-            // // // console.log(layer.getLatLngs());  
-            // // polygon.addLayer(layer);
-            // // var seeArea = L.GeometryUtil.geodesicArea(layer.getLatLngs()[0]);
-            // // console.log(seeArea);              
-            // // // console.log(type); 
-
-            // var modal = document.getElementById("exampleModal");
-
+                    layerControl.addOverlay(hasil_survey_{{ $no }}, "{{ $item_survey->nama_survey }}");
             
-            // document.getElementById('koordinat').value = shape_for_db;
-            // document.getElementById('modal-body').innerHTML = shape_for_db;
+        <?php
+                    $no ++;
+                }
+            }
+
+        ?>
+       
 
 
-        });
+
     </script>
 @endsection
 
