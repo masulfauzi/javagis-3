@@ -83,7 +83,6 @@
                     <div class="card">
 
                         <div class="card-body">
-                            <img src="https://png.pngtree.com/png-vector/20201103/ourmid/pngtree-tree-clipart-cartoon-jungle-tree-clipart-material-png-image_2386774.jpg" alt="">
                             <div id="map" style="width: 100%; height: 600px;">
                                 
                             </div>
