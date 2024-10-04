@@ -103,7 +103,7 @@ class SurveyController extends Controller
 		$this->validate($request, [
 			'id_kps' => 'required',
 			'type' => 'required',
-			// 'koordinat' => 'required',
+			'metode' => 'required',
 			'nama' => 'required',
 		]);
 
@@ -142,13 +142,30 @@ class SurveyController extends Controller
 		}
 		else if($request->input('type') == 'polygon')
 		{
-			return redirect()->route('survey.show', $survey->id);
+			if($request->input('metode') == 'titik')
+			{
+				return redirect()->route('survey.show', $survey->id);
+			}
+			else if($request->input('metode') == 'tracking')
+			{
+				return redirect()->route('survey.tracking.show', $survey->id);
+			}
 		}
 
 
 		$text = 'membuat '.$this->title; //' baru '.$survey->what;
 		$this->log($request, $text, ['survey.id' => $survey->id]);
 		return redirect()->back()->with('message_success', 'Survey berhasil ditambahkan!');
+	}
+
+	public function tracking(Request $request, Survey $survey)
+	{
+		$data['survey'] = $survey;
+		$data['koord_survey'] = KoordSurvey::whereIdSurvey($survey->id)->get();
+		// dd($data['koord_survey']);
+		$data['kps'] = Kps::find($survey->id_kps);
+
+		return view('Survey::survey_tracking', array_merge($data, ['title' => $this->title]));
 	}
 
 	public function form_survey(Request $request, Kups $kups)
