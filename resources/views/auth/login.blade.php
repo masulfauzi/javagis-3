@@ -4,8 +4,8 @@
         <div class="col-lg-5 col-12">
             <div id="auth-left">
                 <div class=" text-center">
-                    <a href="/"><img width="200px" src="{{ asset('assets/images/logo/logo_klhk.png') }}" alt="Logo"></a>
-                    <a href="/"><img width="400px" src="{{ asset('assets/images/logo/logo_gokups_javagis.png') }}" alt="Logo"></a>
+                    <a href="/"><img width="100px" src="{{ asset('assets/images/logo/logo_klhk.png') }}" alt="Logo"></a>
+                    <a href="/"><img width="300px" src="{{ asset('assets/images/logo/logo_gokups_javagis.png') }}" alt="Logo"></a>
 
                 </div>
                 <h5 class="mt-5">Log in.</h5>
