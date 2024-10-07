@@ -82,6 +82,8 @@ class KpsController extends Controller
 		return view('Kps::kps', array_merge($data, ['title' => $this->title]));
 	}
 
+	
+
 	public function survey(Request $request, Kps $kps)
 	{
 		// dd($kps);
@@ -146,6 +148,7 @@ class KpsController extends Controller
 	{
 		$data['kps'] = $kps;
 		$data['kups'] = Kups::whereIdKps($kps->id)->get();
+		$data['survey'] = Survey::whereIdKps($kps->id)->get();
 
 		$text = 'melihat detail '.$this->title;//.' '.$kps->what;
 		$this->log($request, $text, ['kps.id' => $kps->id]);

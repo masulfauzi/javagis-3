@@ -113,6 +113,30 @@ class KoordSurveyController extends Controller
 		return view('KoordSurvey::koordsurvey_detail', array_merge($data, ['title' => $this->title]));
 	}
 
+	public function simpan_koord_tracking(Request $request)
+	{
+		$cek_koord = KoordSurvey::whereIdSurvey($request->get('id_survey'))->orderBy('created_at','DESC')->first();
+
+		if($cek_koord)
+		{
+			$index = $cek_koord->index + 1;
+		}
+		else{
+			$index = 0;
+		}
+
+		$koordsurvey = new KoordSurvey();
+		$koordsurvey->id_survey = $request->input("id_survey");
+		$koordsurvey->koord_x = $request->input("koord_x");
+		$koordsurvey->koord_y = $request->input("koord_y");
+		$koordsurvey->index = $index;
+		
+		$koordsurvey->created_by = Auth::id();
+		$koordsurvey->save();
+
+		// return $koordsurvey;
+	}
+
 	public function edit(Request $request, KoordSurvey $koordsurvey)
 	{
 		$data['koordsurvey'] = $koordsurvey;

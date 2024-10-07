@@ -13,6 +13,21 @@ function deleteConfirm(url){
 	});
 }
 
+function selesaiTracking(url){
+	swal({
+		title: "Apakah Anda yakin?",
+		// text: "Setelah dihapus, data tidak dapat dikembalikan.",
+		icon: "warning",
+		buttons: true,
+		dangerMode: true,
+	})
+	.then((willDelete) => {
+		if (willDelete) {
+			window.location.href = url;
+		}
+	});
+}
+
 function alertCustom(text = "Maaf, fitur belum tersedia"){
 	swal({
 		title: text,
