@@ -12,6 +12,7 @@ Route::controller(SurveyController::class)->middleware(['web','auth'])->name('su
 	Route::get('/survey/print/{survey}', 'print')->name('print.show');
 	Route::get('/survey/tracking/{survey}', 'tracking')->name('tracking.show');
 	Route::get('/survey/marker/{survey}', 'marker')->name('marker.show');
+	Route::get('/survey/marker/start/{survey}', 'marker_start')->name('marker.start.show');
 
 	
 	

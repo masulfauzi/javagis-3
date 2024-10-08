@@ -65,7 +65,8 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-10">
-                                    <button id="" onclick="selesaiTracking('{{ route('survey.marker.start.show', $survey->id) }}')" class="btn btn-primary">Lanjut Survey</button>
+                                    <button id="tambahkoord" class="btn btn-primary">Tambah Koordinat</button>
+                                    <button id="stop" onclick="selesaiTracking('{{ route('survey.marker.show', $survey->id) }}')" class="btn btn-danger">Stop Survey</button>
         
                                 </div>
                                 <div class="col-3">
@@ -149,26 +150,41 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="modal-body">
-                    
+                    <form action="{{ route('koordsurvey.store') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        {!! Form::hidden('koord_x', null, ['id' => 'koord_x']) !!}
+                        {!! Form::hidden('koord_y', null, ['id' => 'koord_y']) !!}
+                        {!! Form::hidden('id_survey', $survey->id, ['id' => 'id_survey']) !!}
 
-                </div>
+                        <div class="row">
+                            <div class="col-md-3 form-group">
+                                <label for="">Keterangan Lokasi</label>
+                            </div>
+                            <div class="col-md-9 form-group">
+                                <textarea name="ket_lokasi" id="ket_lokasi" cols="30" rows="5" class="form-control"></textarea>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3 form-group">
+                                <label for="">Keterangan Objek</label>
+                            </div>
+                            <div class="col-md-9 form-group">
+                                <textarea name="ket_objek" id="ket_objek" cols="30" rows="5" class="form-control"></textarea>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3 form-group">
+                                <label for="">Foto</label>
+                            </div>
+                            <div class="col-md-9 form-group">
+                                <input type="file" name="foto" class="form-control" id="foto" placeholder=""
+                                    accept="capture=camera,image/*">
+                            </div>
+                        </div>
 
-            </div>
-        </div>
 
-    </div>
-    
-    <!-- Modal 2-->
-    <div class="modal fade" id="exampleModal2" aria-labelledby="exampleModalLabel" aria-hidden="true"
-        style="overflow:hidden;">
-        <div class="modal-dialog modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body" id="modal-body2">
-                    
+                        <button class="btn btn-primary" type="submit">Simpan</button>
+                    </form>
 
                 </div>
 
@@ -181,7 +197,16 @@
 @section('page-js')
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    
+    <script>
+        $(document).ready(function() {
+
+            $("#tambahkoord").on("click", function() {
+                
+                $('#exampleModal').modal('show');
+            });
+
+        });
+    </script>
 
     <script>
         // Map initialization 
@@ -213,7 +238,7 @@
             foreach($koord_survey as $item_koord)
             {
         ?>
-            var hasil_survey = L.marker([{{ $item_koord->koord_x }}, {{ $item_koord->koord_y }}], {customId:"{{ $item_koord->id }}"}).on('click', markerOnClick).addTo(map);
+            var hasil_survey = L.marker([{{ $item_koord->koord_x }}, {{ $item_koord->koord_y }}], {customId:"{{ $item_koord->id }}"}).addTo(map);
         <?php
             }
         ?>
@@ -222,13 +247,13 @@
         }
         ?>
 
-        // if (!navigator.geolocation) {
-        //     console.log("Your browser doesn't support geolocation feature!")
-        // } else {
-        //     setInterval(() => {
-        //         navigator.geolocation.getCurrentPosition(getPosition)
-        //     }, 5000);
-        // }
+        if (!navigator.geolocation) {
+            console.log("Your browser doesn't support geolocation feature!")
+        } else {
+            setInterval(() => {
+                navigator.geolocation.getCurrentPosition(getPosition)
+            }, 5000);
+        }
 
         var marker, circle;
 
@@ -261,50 +286,7 @@
             // console.log("Your coordinate is: Lat: " + lat + " Long: " + long + " Accuracy: " + accuracy)
         }
 
-        function edit(id_koord)
-        {
-            var id_koord = id_koord;
-            // console.log(id_koord);
-            $.ajax({
-                url: "{{ url('koordsurvey') }}/" + id_koord + "/edit",
-                type: "GET",
-                dataType: "html",
-                success: function(html) {
-                    $("#modal-body2").html(html);
-                    // $("#geojson").val(shape_for_db);
-                    // document.getElementById('koordinat').value = shape_for_db;
-                    // document.getElementById('id_kps').value = "{{ $kps->id }}";
-                    // document.getElementById('type').value = "marker";
-
-                    $('#exampleModal').modal('hide');
-                    $('#exampleModal2').modal('show');
-                }
-            });
-
-            // $('#exampleModal').modal('show');
-        }
-
-        function markerOnClick(e)
-        {
-            var customId = this.options.customId;
-            // alert("hi. you clicked the marker at " + customId);
-            $.ajax({
-                url: "{{ url('koordsurvey') }}/" + customId + "/detail",
-                type: "GET",
-                dataType: "html",
-                success: function(html) {
-                    $("#modal-body").html(html);
-                    // $("#geojson").val(shape_for_db);
-                    // document.getElementById('koordinat').value = shape_for_db;
-                    // document.getElementById('id_kps').value = "{{ $kps->id }}";
-                    // document.getElementById('type').value = "marker";
-
-                    $('#exampleModal').modal('show');
-                }
-            });
-
-            $('#exampleModal').modal('show');
-        }
+    
     </script>
 @endsection
 

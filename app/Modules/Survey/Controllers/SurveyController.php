@@ -117,7 +117,7 @@ class SurveyController extends Controller
 
 		if($request->input('type') == 'marker')
 		{
-			return redirect()->route('survey.marker.show', $survey->id);
+			return redirect()->route('survey.marker.start.show', $survey->id);
 		}
 		else if($request->input('type') == 'polygon')
 		{
@@ -154,6 +154,15 @@ class SurveyController extends Controller
 		$data['koord_survey'] = KoordSurvey::whereIdSurvey($survey->id)->get();
 
 		return view('Survey::survey_marker', array_merge($data, ['title' => $this->title]));
+	}
+
+	public function marker_start(Request $request, Survey $survey)
+	{
+		$data['survey'] = $survey;
+		$data['kps'] = Kps::find($survey->id_kps);
+		$data['koord_survey'] = KoordSurvey::whereIdSurvey($survey->id)->get();
+
+		return view('Survey::survey_marker_start', array_merge($data, ['title' => $this->title]));
 	}
 
 	public function form_survey(Request $request, Kups $kups)

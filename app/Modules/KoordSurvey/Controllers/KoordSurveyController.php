@@ -144,11 +144,11 @@ class KoordSurveyController extends Controller
 		$ref_survey = Survey::all()->pluck('id_kups','id');
 		
 		$data['forms'] = array(
-			'id_survey' => ['Survey', Form::select("id_survey", $ref_survey, null, ["class" => "form-control select2"]) ],
-			'koord_x' => ['Koord X', Form::text("koord_x", $koordsurvey->koord_x, ["class" => "form-control","placeholder" => "", "required" => "required", "id" => "koord_x"]) ],
-			'koord_y' => ['Koord Y', Form::text("koord_y", $koordsurvey->koord_y, ["class" => "form-control","placeholder" => "", "required" => "required", "id" => "koord_y"]) ],
-			'index' => ['Index', Form::text("index", $koordsurvey->index, ["class" => "form-control","placeholder" => "", "required" => "required", "id" => "index"]) ],
-			'foto' => ['Foto', Form::text("foto", $koordsurvey->foto, ["class" => "form-control","placeholder" => "", "required" => "required", "id" => "foto"]) ],
+			// 'id_survey' => ['Survey', Form::select("id_survey", $ref_survey, null, ["class" => "form-control select2"]) ],
+			// 'koord_x' => ['Koord X', Form::text("koord_x", $koordsurvey->koord_x, ["class" => "form-control","placeholder" => "", "required" => "required", "id" => "koord_x"]) ],
+			// 'koord_y' => ['Koord Y', Form::text("koord_y", $koordsurvey->koord_y, ["class" => "form-control","placeholder" => "", "required" => "required", "id" => "koord_y"]) ],
+			// 'index' => ['Index', Form::text("index", $koordsurvey->index, ["class" => "form-control","placeholder" => "", "required" => "required", "id" => "index"]) ],
+			'foto' => ['Foto', Form::file("foto", ["class" => "form-control","placeholder" => "", "id" => "foto"]) ],
 			'ket_lokasi' => ['Ket Lokasi', Form::textarea("ket_lokasi", $koordsurvey->ket_lokasi, ["class" => "form-control rich-editor"]) ],
 			'ket_objek' => ['Ket Objek', Form::textarea("ket_objek", $koordsurvey->ket_objek, ["class" => "form-control rich-editor"]) ],
 			
@@ -161,33 +161,51 @@ class KoordSurveyController extends Controller
 
 	public function update(Request $request, $id)
 	{
+		// dd($id);
 		$this->validate($request, [
-			'id_survey' => 'required',
-			'koord_x' => 'required',
-			'koord_y' => 'required',
-			'index' => 'required',
-			'foto' => 'required',
+			// 'id_survey' => 'required',
+			// 'koord_x' => 'required',
+			// 'koord_y' => 'required',
+			// 'index' => 'required',
+			// 'foto' => 'required',
 			'ket_lokasi' => 'required',
 			'ket_objek' => 'required',
 			
 		]);
+
+		if($request->has('foto'))
+		{
+			$fileName = time().'.'.$request->foto->extension();  
+
+        	$request->foto->move(public_path('uploads/markers/'), $fileName);
+
+			$koordsurvey = KoordSurvey::find($id);
+
+			
+			$koordsurvey->foto = $fileName;
+			$koordsurvey->ket_lokasi = $request->input("ket_lokasi");
+			$koordsurvey->ket_objek = $request->input("ket_objek");
+			
+			$koordsurvey->updated_by = Auth::id();
+			$koordsurvey->save();
+
+		}
+		else{
+			$koordsurvey = KoordSurvey::find($id);
+
+			$koordsurvey->ket_lokasi = $request->input("ket_lokasi");
+			$koordsurvey->ket_objek = $request->input("ket_objek");
+			
+			$koordsurvey->updated_by = Auth::id();
+			$koordsurvey->save();
+		}
 		
-		$koordsurvey = KoordSurvey::find($id);
-		$koordsurvey->id_survey = $request->input("id_survey");
-		$koordsurvey->koord_x = $request->input("koord_x");
-		$koordsurvey->koord_y = $request->input("koord_y");
-		$koordsurvey->index = $request->input("index");
-		$koordsurvey->foto = $request->input("foto");
-		$koordsurvey->ket_lokasi = $request->input("ket_lokasi");
-		$koordsurvey->ket_objek = $request->input("ket_objek");
 		
-		$koordsurvey->updated_by = Auth::id();
-		$koordsurvey->save();
 
 
 		$text = 'mengedit '.$this->title;//.' '.$koordsurvey->what;
 		$this->log($request, $text, ['koordsurvey.id' => $koordsurvey->id]);
-		return redirect()->route('koordsurvey.index')->with('message_success', 'Koord Survey berhasil diubah!');
+		return redirect()->back()->with('message_success', 'Koord Survey berhasil diubah!');
 	}
 
 	public function destroy(Request $request, $id)

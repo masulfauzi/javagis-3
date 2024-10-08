@@ -12,17 +12,18 @@
     <div class='col-lg-10'>
         <p class='fw-bold'>{{ $koordsurvey->koord_y }}</p>
     </div>
-    <div class='col-lg-2'>
-        <p>Index</p>
-    </div>
-    <div class='col-lg-10'>
-        <p class='fw-bold'>{{ $koordsurvey->index }}</p>
-    </div>
+    
     <div class='col-lg-2'>
         <p>Foto</p>
     </div>
     <div class='col-lg-10'>
-        <p class='fw-bold'>{{ $koordsurvey->foto }}</p>
+        <p class='fw-bold'>
+            @if ($koordsurvey->foto)
+                <img width="300px" src="{{ url('uploads/markers/'.$koordsurvey->foto) }}" alt="">
+            @else
+                Gambar tidak tersedia
+            @endif
+        </p>
     </div>
     <div class='col-lg-2'>
         <p>Ket Lokasi</p>
@@ -36,8 +37,14 @@
     <div class='col-lg-10'>
         <p class='fw-bold'>{{ $koordsurvey->ket_objek }}</p>
     </div>
-    <div class="col-lg-12">
+    <div class="col-lg-2">
         <button class="btn btn-danger" onclick="deleteConfirm('{{ route('koordsurvey.destroy', $koordsurvey->id) }}')">Delete</button>
+    </div>
+    <div class="col-lg-8">
+
+    </div>
+    <div class="col-lg-2">
+        <button id="edit" onclick="edit('{{ $koordsurvey->id }}')" class="btn btn-primary">Edit</button>
     </div>
 
 </div>
