@@ -101,7 +101,7 @@ class KoordSurveyController extends Controller
 
 		$text = 'membuat '.$this->title; //' baru '.$koordsurvey->what;
 		$this->log($request, $text, ['koordsurvey.id' => $koordsurvey->id]);
-		return redirect()->route('survey.show', $request->get('id_survey'))->with('message_success', 'Koord Survey berhasil ditambahkan!');
+		return redirect()->back()->with('message_success', 'Koord Survey berhasil ditambahkan!');
 	}
 
 	public function show(Request $request, KoordSurvey $koordsurvey)

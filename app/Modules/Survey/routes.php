@@ -11,6 +11,7 @@ Route::controller(SurveyController::class)->middleware(['web','auth'])->name('su
 	Route::post('/survey/save_image', 'save_image')->name('save_image.store');
 	Route::get('/survey/print/{survey}', 'print')->name('print.show');
 	Route::get('/survey/tracking/{survey}', 'tracking')->name('tracking.show');
+	Route::get('/survey/marker/{survey}', 'marker')->name('marker.show');
 
 	
 	

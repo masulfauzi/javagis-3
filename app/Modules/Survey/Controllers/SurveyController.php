@@ -103,7 +103,7 @@ class SurveyController extends Controller
 		$this->validate($request, [
 			'id_kps' => 'required',
 			'type' => 'required',
-			'metode' => 'required',
+			// 'metode' => 'required',
 			'nama' => 'required',
 		]);
 
@@ -117,28 +117,7 @@ class SurveyController extends Controller
 
 		if($request->input('type') == 'marker')
 		{
-			if($request->has('foto'))
-			{
-				$foto = time().'.'.$request->foto->extension();  
-
-				$request->foto->move(public_path('uploads/markers/'), $foto);
-			}
-			else{
-				$foto = '';
-			}
-			
-			$koordinat = json_decode($request->koordinat, true);
-			
-			$koord = New KoordSurvey();
-			$koord->id_survey = $survey->id;
-			$koord->koord_x = $koordinat['geometry']['coordinates'][0];
-			$koord->koord_y = $koordinat['geometry']['coordinates'][1];
-			$koord->index = 1;
-			$koord->ket_lokasi = $request->input('ket_lokasi');
-			$koord->ket_objek = $request->input('ket_objek');
-			$koord->foto = $foto;
-
-			$koord->save();
+			return redirect()->route('survey.marker.show', $survey->id);
 		}
 		else if($request->input('type') == 'polygon')
 		{
@@ -166,6 +145,15 @@ class SurveyController extends Controller
 		$data['kps'] = Kps::find($survey->id_kps);
 
 		return view('Survey::survey_tracking', array_merge($data, ['title' => $this->title]));
+	}
+
+	public function marker(Request $request, Survey $survey)
+	{
+		$data['survey'] = $survey;
+		$data['kps'] = Kps::find($survey->id_kps);
+		$data['koord_survey'] = KoordSurvey::whereIdSurvey($survey->id)->get();
+
+		return view('Survey::survey_marker', array_merge($data, ['title' => $this->title]));
 	}
 
 	public function form_survey(Request $request, Kups $kups)

@@ -27,6 +27,29 @@
             opacity: 0.8;
             cursor: pointer;
         }
+
+        #titik {
+            display: flex;
+            align-items: center;
+            position: absolute;
+            top: 545px;
+            right: 11px;
+            width: 32px;
+            height: 32px;
+            background-color: white;
+            border-radius: 3px;
+            border-color: gray;
+            border-style: solid;
+            border-width: 1px 1px 1px 1px;
+            opacity: 0.6;
+            text-align: center;
+            z-index: 500;
+        }
+
+        #titik:hover {
+            opacity: 0.8;
+            cursor: pointer;
+        }
     </style>
 @endsection
 
@@ -100,6 +123,9 @@
                                 <button id="tracking" class="d-flex justify-content-center">
                                     <i class='fa fa-paper-plane'></i>
                                 </button>
+                                <button id="titik" class="d-flex justify-content-center">
+                                    <i class='fa fa-map-marker'></i>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -148,7 +174,13 @@
                                         <td>{{ $item->type }}</td>
                                         
                                         <td>
+                                            @if ($item->type == 'marker')
+                                            {!! button('survey.marker.show','', $item->id) !!}
+                                            
+                                            @else
+                                            
                                             {!! button('survey.show','', $item->id) !!}
+                                            @endif
                                             <a href="{{ route('survey.export.show', $item->id) }}" class="btn btn-outline-primary">Export</a>
                                             {{-- {!! button('survey.edit', $title, $item->id) !!} --}}
                                             {{-- {!! button('survey.destroy', $title, $item->id) !!} --}}
@@ -174,7 +206,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Tambah Survey</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="modal-body">
@@ -214,14 +246,14 @@
             echo "var layerKps = $kps->geojson;";
         
             echo 'var myStyle = {
-                                                        "color": "#ff7800",
-                                                        "weight": 5,
-                                                        "opacity": 0.65
-                                                    };';
+                                    "color": "#ff7800",
+                                    "weight": 5,
+                                    "opacity": 0.65
+                                };';
         
             echo "L.geoJSON(layerKps, {
-                                                        style: myStyle
-                                                    }).addTo(map).bindPopup('Area KPS $kps->nama_kps');";
+                                        style: myStyle
+                                    }).addTo(map).bindPopup('Area KPS $kps->nama_kps');";
         }
         
         ?>
@@ -281,103 +313,56 @@
             //     // console.log(latitude);
 
             // })
-        })
-
-
-
-
-
-
-        var drawnItems = new L.FeatureGroup();
-        map.addLayer(drawnItems);
-        var drawControl = new L.Control.Draw({
-            position: 'bottomright',
-            draw: {
-                polygon: false,
-                marker: true,
-                polyline: false,
-                rectangle: false,
-                circle: false
-            }
         });
-        map.addControl(drawControl);
 
-        map.on('draw:created', function(e) {
-            // var type = e.layerType;
-            var layer = e.layer;
-            var type = e.layerType;
+        L.DomEvent.on(document.getElementById('titik'), 'click', function() {
+            map.locate({
+                setView: true,
+                maxZoom: 20
+            });
 
-            var shape = layer.toGeoJSON()
-            var shape_for_db = JSON.stringify(shape);
-            // const myObj = JSON.parse(shape_for_db);
-            // var x = myObj["geometry"]["coordinates"];
+            $.ajax({
+                url: "{{ route('survey.form_marker.create', $kps->id) }}",
+                type: "GET",
+                dataType: "html",
+                success: function(html) {
+                    $("#modal-body").html(html);
+                    // $("#geojson").val(shape_for_db);
+                    // document.getElementById('koordinat').value = shape_for_db;
+                    document.getElementById('id_kps').value = "{{ $kps->id }}";
+                    document.getElementById('type').value = "marker";
 
+                    $('#exampleModal').modal('show');
+                }
+            });
 
+            $('#exampleModal').modal('show');
 
-            if (type === 'marker') {
+            // navigator.geolocation.getCurrentPosition(position => {
+            //     const {
+            //         coords: {
+            //             latitude,
+            //             longitude
+            //         }
+            //     } = position;
+            //     // var marker = new L.marker([latitude, longitude], {
+            //     //     draggable: true,
+            //     //     autoPan: true
+            //     // }).addTo(map);
+            //     // marker.bounce();
 
-                $.ajax({
-                    url: "{{ route('survey.form_marker.create', $kps->id) }}",
-                    type: "GET",
-                    dataType: "html",
-                    success: function(html) {
-                        $("#modal-body").html(html);
-                        // $("#geojson").val(shape_for_db);
-                        document.getElementById('koordinat').value = shape_for_db;
-                        document.getElementById('id_kups').value = "{{ $kps->id }}";
-                        document.getElementById('type').value = "marker";
+            //     map.setView([latitude, longitude], 13)
+            //     // console.log(latitude);
 
-                        $('#exampleModal').modal('show');
-                    }
-                });
-
-                $('#exampleModal').modal('show');
-
-                // $.ajax({
-                //     url: "{{ route('kups.simpan_batas.store') }}",
-                //     type: "POST",
-                //     data: {
-                //         id_kups: "{{ $kps->id }}",
-                //         _token: "{{ csrf_token() }}",
-                //         koordinat: shape_for_db
-                //     },
-                //     success: function() {
-                //         location.reload();
-                //     }
-                // });
-
-            } else {
-                alertCustom();
-            }
-
-            // if (type === 'polyline') {
-            //     var coords = layer.getLatLngs();
-            //     var seeArea = 0;
-            //     for (var i = 0; i < coords.length - 1; i++) {
-            //         seeArea += coords[i].distanceTo(coords[i + 1]);
-            //     }
-            // } else if (type === 'rectangle') {
-            //     var seeArea = L.GeometryUtil.geodesicArea(layer.getLatLngs()[0]);
-            //     // console.log(seeArea);
-            // } else if (type === 'polygon') {
-            //     var seeArea = L.GeometryUtil.geodesicArea(layer.getLatLngs()[0]);
-            //     // console.log(seeArea);
-            // }
-
-            // // // console.log(layer.getLatLngs());  
-            // // polygon.addLayer(layer);
-            // // var seeArea = L.GeometryUtil.geodesicArea(layer.getLatLngs()[0]);
-            // // console.log(seeArea);              
-            // // // console.log(type); 
-
-            // var modal = document.getElementById("exampleModal");
-
-
-            // document.getElementById('koordinat').value = shape_for_db;
-            // document.getElementById('modal-body').innerHTML = shape_for_db;
-
-
+            // })
         });
+
+
+
+
+
+
+        
     </script>
 @endsection
 
