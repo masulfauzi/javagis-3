@@ -65,8 +65,8 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-10">
-                                    <button id="tambahkoord" class="btn btn-primary">Tambah Koordinat</button>
-        
+                                    {{-- <button id="tambahkoord" class="btn btn-primary">Tambah Koordinat</button> --}}
+                                    <button id="stop" onclick="selesaiTracking('{{ route('survey.polygon.start.show', $survey->id) }}')" class="btn btn-primary">Lanjut Survey</button>
                                 </div>
                                 <div class="col-3">
                                 </div>
@@ -209,7 +209,7 @@
 
     <script>
         // Map initialization 
-        var map = L.map('map').setView([{{ $kps->koord_x }}, {{ $kps->koord_y }}], 6);
+        var map = L.map('map').setView([{{ $kps->koord_y }}, {{ $kps->koord_x }}], 6);
 
         //osm layer
         var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -253,44 +253,7 @@
         }
         ?>
 
-        if (!navigator.geolocation) {
-            console.log("Your browser doesn't support geolocation feature!")
-        } else {
-            setInterval(() => {
-                navigator.geolocation.getCurrentPosition(getPosition)
-            }, 5000);
-        }
-
-        var marker, circle;
-
-        function getPosition(position) {
-            // console.log(position)
-            var lat = position.coords.latitude
-            var long = position.coords.longitude
-            var accuracy = position.coords.accuracy
-
-            document.getElementById('koord_x').value = lat;
-            document.getElementById('koord_y').value = long;
-
-            if (marker) {
-                map.removeLayer(marker)
-            }
-
-            if (circle) {
-                map.removeLayer(circle)
-            }
-
-            marker = L.marker([lat, long])
-            circle = L.circle([lat, long], {
-                radius: accuracy
-            })
-
-            var featureGroup = L.featureGroup([marker, circle]).addTo(map)
-
-            map.fitBounds(featureGroup.getBounds())
-
-            console.log("Your coordinate is: Lat: " + lat + " Long: " + long + " Accuracy: " + accuracy)
-        }
+        
     </script>
 @endsection
 

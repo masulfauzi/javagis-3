@@ -123,7 +123,7 @@ class SurveyController extends Controller
 		{
 			if($request->input('metode') == 'titik')
 			{
-				return redirect()->route('survey.show', $survey->id);
+				return redirect()->route('survey.polygon.start.show', $survey->id);
 			}
 			else if($request->input('metode') == 'tracking')
 			{
@@ -163,6 +163,24 @@ class SurveyController extends Controller
 		$data['koord_survey'] = KoordSurvey::whereIdSurvey($survey->id)->get();
 
 		return view('Survey::survey_marker_start', array_merge($data, ['title' => $this->title]));
+	}
+
+	public function polygon_start(Request $request, Survey $survey)
+	{
+		$data['survey'] = $survey;
+		$data['kps'] = Kps::find($survey->id_kps);
+		$data['koord_survey'] = KoordSurvey::whereIdSurvey($survey->id)->get();
+
+		return view('Survey::survey_polygon_start', array_merge($data, ['title' => $this->title]));
+	}
+	
+	public function polygon(Request $request, Survey $survey)
+	{
+		$data['survey'] = $survey;
+		$data['kps'] = Kps::find($survey->id_kps);
+		$data['koord_survey'] = KoordSurvey::whereIdSurvey($survey->id)->get();
+
+		return view('Survey::survey_polygon', array_merge($data, ['title' => $this->title]));
 	}
 
 	public function form_survey(Request $request, Kups $kups)

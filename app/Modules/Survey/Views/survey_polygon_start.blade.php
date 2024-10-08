@@ -66,7 +66,8 @@
                             <div class="row">
                                 <div class="col-10">
                                     <button id="tambahkoord" class="btn btn-primary">Tambah Koordinat</button>
-        
+                                    <button id="skip" onclick="skip()" class="btn btn-success">Skip</button>
+                                    <button id="stop" onclick="selesaiTracking('{{ route('survey.polygon.show', $survey->id) }}')" class="btn btn-danger">Stop Survey</button>
                                 </div>
                                 <div class="col-3">
                                 </div>
@@ -209,7 +210,7 @@
 
     <script>
         // Map initialization 
-        var map = L.map('map').setView([{{ $kps->koord_x }}, {{ $kps->koord_y }}], 6);
+        var map = L.map('map').setView([{{ $kps->koord_y }}, {{ $kps->koord_x }}], 6);
 
         //osm layer
         var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -289,8 +290,38 @@
 
             map.fitBounds(featureGroup.getBounds())
 
-            console.log("Your coordinate is: Lat: " + lat + " Long: " + long + " Accuracy: " + accuracy)
+            // console.log("Your coordinate is: Lat: " + lat + " Long: " + long + " Accuracy: " + accuracy)
         }
+
+        function getLocation(position)
+        {
+            var lat = position.coords.latitude;
+            var long = position.coords.longitude;
+            // console.log(lat);
+
+            $.ajax({
+                url: "{{ route('koordsurvey.store') }}",
+                type: "POST",
+                data: {
+                    id_survey: "{{ $survey->id }}",
+                    _token: "{{ csrf_token() }}",
+                    koord_x: lat,
+                    koord_y: long
+                },
+                success: function() {
+                    location.reload();
+                }
+            });
+        }
+
+        function skip () {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(getLocation);
+            } else {
+                alert('GeoLocation not supported or not allowed');
+            }
+        }
+
     </script>
 @endsection
 
