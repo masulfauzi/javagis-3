@@ -40,11 +40,11 @@ class KoordSurveyController extends Controller
 		$ref_survey = Survey::all()->pluck('id_kups','id');
 		
 		$data['forms'] = array(
-			'id_survey' => ['Survey', Form::select("id_survey", $ref_survey, null, ["class" => "form-control select2"]) ],
-			'koord_x' => ['Koord X', Form::text("koord_x", old("koord_x"), ["class" => "form-control","placeholder" => "", "required" => "required"]) ],
-			'koord_y' => ['Koord Y', Form::text("koord_y", old("koord_y"), ["class" => "form-control","placeholder" => "", "required" => "required"]) ],
-			'index' => ['Index', Form::text("index", old("index"), ["class" => "form-control","placeholder" => "", "required" => "required"]) ],
-			'foto' => ['Foto', Form::text("foto", old("foto"), ["class" => "form-control","placeholder" => "", "required" => "required"]) ],
+			'id_survey' => ['', Form::hidden("id_survey", null, ["class" => "form-control", "id" => "id_survey2"]) ],
+			'koord_x' => ['', Form::hidden("koord_x", old("koord_x"), ["class" => "form-control","placeholder" => "", "id" => "koord_x2"]) ],
+			'koord_y' => ['', Form::hidden("koord_y", old("koord_y"), ["class" => "form-control","placeholder" => "", "id" => "koord_y2"]) ],
+			// 'index' => ['Index', Form::text("index", old("index"), ["class" => "form-control","placeholder" => "", "required" => "required"]) ],
+			'foto' => ['Foto', Form::file("foto", ["class" => "form-control","placeholder" => ""]) ],
 			'ket_lokasi' => ['Ket Lokasi', Form::textarea("ket_lokasi", old("ket_lokasi"), ["class" => "form-control rich-editor"]) ],
 			'ket_objek' => ['Ket Objek', Form::textarea("ket_objek", old("ket_objek"), ["class" => "form-control rich-editor"]) ],
 			

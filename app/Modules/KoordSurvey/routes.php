@@ -12,7 +12,7 @@ Route::controller(KoordSurveyController::class)->middleware(['web','auth'])->nam
 	
 	Route::get('/koordsurvey/{survey}', 'index')->name('index');
 	Route::get('/koordsurvey/data', 'data')->name('data.index');
-	Route::get('/koordsurvey/create', 'create')->name('create');
+	Route::get('/koordsurvey/create/baru', 'create')->name('create');
 	Route::post('/koordsurvey', 'store')->name('store');
 	Route::get('/koordsurvey/{koordsurvey}/detail', 'show')->name('show');
 	Route::get('/koordsurvey/{koordsurvey}/edit', 'edit')->name('edit');

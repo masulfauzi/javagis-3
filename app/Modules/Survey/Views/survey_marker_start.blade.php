@@ -146,7 +146,7 @@
         <div class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Keterangan Objek</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="modal-body">
@@ -192,11 +192,31 @@
         </div>
 
     </div>
+    
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal2" aria-labelledby="exampleModalLabel" aria-hidden="true"
+        style="overflow:hidden;">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Keterangan Objek</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modal-body2">
+                    
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
 @endsection
 
 @section('page-js')
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.js"></script>
     <script>
         $(document).ready(function() {
 
@@ -247,6 +267,20 @@
         }
         ?>
 
+        var drawnItems = new L.FeatureGroup();
+        map.addLayer(drawnItems);
+        var drawControl = new L.Control.Draw({
+            position: 'bottomright',
+            draw: {
+                polygon: false,
+                marker: true,
+                polyline: false,
+                rectangle: false,
+                circle: false
+            }
+        });
+        map.addControl(drawControl);
+
         if (!navigator.geolocation) {
             console.log("Your browser doesn't support geolocation feature!")
         } else {
@@ -285,6 +319,74 @@
 
             // console.log("Your coordinate is: Lat: " + lat + " Long: " + long + " Accuracy: " + accuracy)
         }
+
+        map.on('draw:created', function(e) {
+            // var type = e.layerType;
+            var layer = e.layer;
+            var type = e.layerType;
+
+            var shape = layer.toGeoJSON()
+            var shape_for_db = JSON.stringify(shape);
+            const myObj = JSON.parse(shape_for_db);
+            var x = myObj["geometry"]["coordinates"];
+            
+
+
+
+            if (type === 'marker') {
+
+                $.ajax({
+                    url: "{{ route('koordsurvey.create') }}",
+                    type: "GET",
+                    dataType: "html",
+                    success: function(html) {
+                        $("#modal-body2").html(html);
+                        // $("#geojson").val(shape_for_db);
+                        document.getElementById('koord_x2').value = x[1];
+                        document.getElementById('koord_y2').value = x[0];
+                        document.getElementById('id_survey2').value = "{{ $survey->id }}";
+                        // document.getElementById('type').value = "marker";
+
+                        $('#exampleModal2').modal('show');
+                    }
+                });
+
+                // $('#exampleModal').modal('show');
+
+                // $.ajax({
+                //     url: "{{ route('kups.simpan_batas.store') }}",
+                //     type: "POST",
+                //     data: {
+                //         id_kups: "{{ $kps->id }}",
+                //         _token: "{{ csrf_token() }}",
+                //         koordinat: shape_for_db
+                //     },
+                //     success: function() {
+                //         location.reload();
+                //     }
+                // });
+
+            } else {
+                alertCustom();
+            }
+            //     map.setView([latitude, longitude], 13)
+            //     // console.log(latitude);
+
+            // if (type === 'polyline') {
+            //     var coords = layer.getLatLngs();
+            //     var seeArea = 0;
+            //     for (var i = 0; i < coords.length - 1; i++) {
+            //         seeArea += coords[i].distanceTo(coords[i + 1]);
+            //     }
+            // } else if (type === 'rectangle') {
+            //     var seeArea = L.GeometryUtil.geodesicArea(layer.getLatLngs()[0]);
+            //     // console.log(seeArea);
+            // } else if (type === 'polygon') {
+            //     var seeArea = L.GeometryUtil.geodesicArea(layer.getLatLngs()[0]);
+            //     // console.log(seeArea);
+            // }
+            // })
+        });
 
     
     </script>

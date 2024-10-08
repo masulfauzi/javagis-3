@@ -40,7 +40,7 @@ class SurveyController extends Controller
 
 	public function save_image(Request $request)
 	{
-		$fileName = time().'.'.$request->image->extension();  
+		$fileName = time().'.'.$request->image->extension();
 
         $request->image->move(public_path('export_image/'), $fileName);
 
