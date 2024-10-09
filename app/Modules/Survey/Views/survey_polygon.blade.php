@@ -10,7 +10,7 @@
         <div class="page-title">
             <div class="row mb-2">
                 <div class="col-12 col-md-6 order-md-1 order-last">
-                    <a href="{{ route('survey.index') }}" class="btn btn-sm icon icon-left btn-outline-secondary"><i
+                    <a href="{{ route('kps.survey.index', $survey->id_kps) }}" class="btn btn-sm icon icon-left btn-outline-secondary"><i
                             class="fa fa-arrow-left"></i> Kembali </a>
                 </div>
                 <div class="col-12 col-md-6 order-md-2 order-first">
@@ -47,6 +47,12 @@
                                 <div class='col-lg-10'>
                                     <p class='fw-bold'>{{ $survey->type }}</p>
                                 </div>
+                                <div class='col-lg-2'>
+                                    <p>Luas</p>
+                                </div>
+                                <div class='col-lg-10'>
+                                    <p class='fw-bold'>{{ $survey->luas }} M Persegi</p>
+                                </div>
 
                             </div>
                         </div>
@@ -67,6 +73,8 @@
                                 <div class="col-10">
                                     {{-- <button id="tambahkoord" class="btn btn-primary">Tambah Koordinat</button> --}}
                                     <button id="stop" onclick="selesaiTracking('{{ route('survey.polygon.start.show', $survey->id) }}')" class="btn btn-primary">Lanjut Survey</button>
+                                    {{-- <button id="" onclick="getArea()" class="btn btn-primary">Hitung Luas</button> --}}
+                                    
                                 </div>
                                 <div class="col-3">
                                 </div>
@@ -196,6 +204,7 @@
 @section('page-js')
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+        
     <script>
         $(document).ready(function() {
 
@@ -247,11 +256,38 @@
                                     ]
                                 }
                             };
+            var hasil_geojson = L.geoJSON(hasil_survey);
             
-            L.geoJSON(hasil_survey).addTo(map).bindPopup('Hasil Survey');
+            L.geoJSON(hasil_survey, {customId:"{{ $survey->id }}"}).on('click', polyOnClick).addTo(map);
         <?php
         }
         ?>
+
+        
+
+        function polyOnClick(e)
+        {
+            var customId = this.options.customId;
+            // alert("hi. you clicked the marker at " + customId);
+            $.ajax({
+                url: "{{ url('survey') }}/" + customId,
+                type: "GET",
+                dataType: "html",
+                success: function(html) {
+                    $("#modal-body").html(html);
+                    // $("#geojson").val(shape_for_db);
+                    // document.getElementById('koordinat').value = shape_for_db;
+                    // document.getElementById('id_kps').value = "{{ $kps->id }}";
+                    // document.getElementById('type').value = "marker";
+
+                    $('#exampleModal').modal('show');
+                }
+            });
+
+            $('#exampleModal').modal('show');
+        }
+
+        
 
         
     </script>

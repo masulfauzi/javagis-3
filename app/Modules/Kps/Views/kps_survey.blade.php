@@ -179,7 +179,7 @@
                                             
                                             @else
                                             
-                                            {!! button('survey.show','', $item->id) !!}
+                                            {!! button('survey.polygon.show','', $item->id) !!}
                                             @endif
                                             <a href="{{ route('survey.export.show', $item->id) }}" class="btn btn-outline-primary">Export</a>
                                             {{-- {!! button('survey.edit', $title, $item->id) !!} --}}

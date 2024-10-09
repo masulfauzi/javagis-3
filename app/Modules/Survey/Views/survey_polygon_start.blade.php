@@ -47,6 +47,12 @@
                                 <div class='col-lg-10'>
                                     <p class='fw-bold'>{{ $survey->type }}</p>
                                 </div>
+                                <div class='col-lg-2'>
+                                    <p>Luas</p>
+                                </div>
+                                <div class='col-lg-10'>
+                                    <p class='fw-bold'>{{ $survey->luas }} M persegi</p>
+                                </div>
 
                             </div>
                         </div>
@@ -197,6 +203,7 @@
 @section('page-js')
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+        <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7/turf.min.js"></script>
     <script>
         $(document).ready(function() {
 
@@ -205,6 +212,29 @@
                 $('#exampleModal').modal('show');
             });
 
+        });
+    </script>
+
+    <script>
+        var polygon = turf.polygon([
+            [
+                @foreach($koord_survey as $item)
+                    [{{ $item->koord_y }},{{ $item->koord_x }}],
+                @endforeach
+                [{{ $koord_survey_pertama->koord_y }},{{ $koord_survey_pertama->koord_x }}],
+            ],
+        ]);
+
+        var area = turf.area(polygon);
+
+        $.ajax({
+            url: "{{ route('survey.simpan_luas.store') }}",
+            type: "POST",
+            data: {
+                id_survey: "{{ $survey->id }}",
+                _token: "{{ csrf_token() }}",
+                luas: area
+            }
         });
     </script>
 

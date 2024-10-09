@@ -111,6 +111,7 @@ class SurveyController extends Controller
 		$survey->id_kps = $request->input("id_kps");
 		$survey->type = $request->input("type");
 		$survey->nama_survey = $request->input("nama");
+		$survey->keterangan = $request->input("keterangan");
 		
 		$survey->created_by = Auth::id();
 		$survey->save();
@@ -169,7 +170,8 @@ class SurveyController extends Controller
 	{
 		$data['survey'] = $survey;
 		$data['kps'] = Kps::find($survey->id_kps);
-		$data['koord_survey'] = KoordSurvey::whereIdSurvey($survey->id)->get();
+		$data['koord_survey'] = KoordSurvey::whereIdSurvey($survey->id)->orderby('index')->get();
+		$data['koord_survey_pertama'] = KoordSurvey::whereIdSurvey($survey->id)->orderby('index')->first();
 
 		return view('Survey::survey_polygon_start', array_merge($data, ['title' => $this->title]));
 	}
@@ -178,9 +180,19 @@ class SurveyController extends Controller
 	{
 		$data['survey'] = $survey;
 		$data['kps'] = Kps::find($survey->id_kps);
-		$data['koord_survey'] = KoordSurvey::whereIdSurvey($survey->id)->get();
+		$data['koord_survey'] = KoordSurvey::whereIdSurvey($survey->id)->orderby('index')->get();
+		
+
 
 		return view('Survey::survey_polygon', array_merge($data, ['title' => $this->title]));
+	}
+
+	public function simpan_luas(Request $request)
+	{
+		$survey = Survey::find($request->input('id_survey'));
+
+		$survey->luas = $request->input('luas');
+		$survey->save();
 	}
 
 	public function form_survey(Request $request, Kups $kups)

@@ -15,6 +15,7 @@ Route::controller(SurveyController::class)->middleware(['web','auth'])->name('su
 	Route::get('/survey/marker/start/{survey}', 'marker_start')->name('marker.start.show');
 	Route::get('/survey/polygon/start/{survey}', 'polygon_start')->name('polygon.start.show');
 	Route::get('/survey/polygon/{survey}', 'polygon')->name('polygon.show');
+	Route::post('/survey/simpan_luas', 'simpan_luas')->name('simpan_luas.store');
 
 	
 	
