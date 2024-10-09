@@ -209,7 +209,7 @@
 
     <script>
         // Map initialization 
-        var map = L.map('map').setView([{{ $kps->koord_y }}, {{ $kps->koord_x }}], 6);
+        var map = L.map('map').setView([{{ $kps->koord_y }}, {{ $kps->koord_x }}], 13);
 
         //osm layer
         var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
