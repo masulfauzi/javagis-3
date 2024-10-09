@@ -20,6 +20,12 @@
                 <p class='fw-bold'>{{ $survey->type }}</p>
             </div>
             <div class='col-lg-2'>
+                <p>Luas</p>
+            </div>
+            <div class='col-lg-10'>
+                <p class='fw-bold'>{{ $survey->luas }} M Persegi</p>
+            </div>
+            <div class='col-lg-2'>
                 <p>Keterangan</p>
             </div>
             <div class='col-lg-10'>
