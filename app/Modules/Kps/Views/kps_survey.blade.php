@@ -9,7 +9,7 @@
             display: flex;
             align-items: center;
             position: absolute;
-            top: 500px;
+            top: 450px;
             right: 11px;
             width: 32px;
             height: 32px;
@@ -32,7 +32,7 @@
             display: flex;
             align-items: center;
             position: absolute;
-            top: 545px;
+            top: 495px;
             right: 11px;
             width: 32px;
             height: 32px;
@@ -356,6 +356,20 @@
 
             // })
         });
+
+        var drawnItems = new L.FeatureGroup();
+        map.addLayer(drawnItems);
+        var drawControl = new L.Control.Draw({
+            position: 'bottomright',
+            draw: {
+                polygon: true,
+                marker: false,
+                polyline: false,
+                rectangle: false,
+                circle: false
+            }
+        });
+        map.addControl(drawControl);
 
 
 

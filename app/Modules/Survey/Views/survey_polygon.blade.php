@@ -53,6 +53,12 @@
                                 <div class='col-lg-10'>
                                     <p class='fw-bold'>{{ $survey->luas }} M Persegi</p>
                                 </div>
+                                <div class='col-lg-2'>
+                                    <p>Keterangan</p>
+                                </div>
+                                <div class='col-lg-10'>
+                                    <p class='fw-bold'>{{ $survey->keterangan }}</p>
+                                </div>
 
                             </div>
                         </div>
@@ -150,48 +156,33 @@
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" aria-labelledby="exampleModalLabel" aria-hidden="true"
         style="overflow:hidden;">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Informasi Objek</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="modal-body">
-                    <form action="{{ route('koordsurvey.store') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        {!! Form::hidden('koord_x', null, ['id' => 'koord_x']) !!}
-                        {!! Form::hidden('koord_y', null, ['id' => 'koord_y']) !!}
-                        {!! Form::hidden('id_survey', $survey->id, ['id' => 'id_survey']) !!}
+                    
 
-                        <div class="row">
-                            <div class="col-md-3 form-group">
-                                <label for="">Keterangan Lokasi</label>
-                            </div>
-                            <div class="col-md-9 form-group">
-                                <textarea name="ket_lokasi" id="ket_lokasi" cols="30" rows="5" class="form-control"></textarea>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-3 form-group">
-                                <label for="">Keterangan Objek</label>
-                            </div>
-                            <div class="col-md-9 form-group">
-                                <textarea name="ket_objek" id="ket_objek" cols="30" rows="5" class="form-control"></textarea>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-3 form-group">
-                                <label for="">Foto</label>
-                            </div>
-                            <div class="col-md-9 form-group">
-                                <input type="file" name="foto" class="form-control" id="foto" placeholder=""
-                                    accept="capture=camera,image/*">
-                            </div>
-                        </div>
+                </div>
 
+            </div>
+        </div>
 
-                        <button class="btn btn-primary" type="submit">Simpan</button>
-                    </form>
+    </div>
+
+    <!-- Modal 2-->
+    <div class="modal fade" id="exampleModal2" aria-labelledby="exampleModalLabel" aria-hidden="true"
+        style="overflow:hidden;">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Informasi Objek</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modal-body2">
+                    
 
                 </div>
 
@@ -262,6 +253,29 @@
         <?php
         }
         ?>
+
+        function edit(id_survey)
+        {
+            var id_survey = id_survey;
+            // console.log(id_koord);
+            $.ajax({
+                url: "{{ url('survey') }}/" + id_survey + "/edit",
+                type: "GET",
+                dataType: "html",
+                success: function(html) {
+                    $("#modal-body2").html(html);
+                    // $("#geojson").val(shape_for_db);
+                    // document.getElementById('koordinat').value = shape_for_db;
+                    // document.getElementById('id_kps').value = "{{ $kps->id }}";
+                    // document.getElementById('type').value = "marker";
+
+                    $('#exampleModal').modal('hide');
+                    $('#exampleModal2').modal('show');
+                }
+            });
+
+            // $('#exampleModal').modal('show');
+        }
 
         
 

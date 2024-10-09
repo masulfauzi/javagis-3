@@ -31,7 +31,14 @@
             <div class='col-lg-10'>
                 <p class='fw-bold'>{{ $survey->keterangan }}</p>
             </div>
-
+            <div class='col-lg-2'>
+                <button class="btn btn-danger" onclick="deleteConfirm('{{ route('survey.destroy', $survey->id) }}')">Hapus</button>
+            </div>
+            <div class='col-lg-7'>
+            </div>
+            <div class='col-lg-2'>
+                <button class="btn btn-primary" onclick="edit('{{ $survey->id }}')">Edit</button>
+            </div>
         </div>
     </div>
 </div>

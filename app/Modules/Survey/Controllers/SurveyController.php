@@ -218,11 +218,13 @@ class SurveyController extends Controller
 	{
 		$data['survey'] = $survey;
 
-		$ref_kups = Kups::all()->pluck('nama_kups','id');
+		// $ref_kups = Kups::all()->pluck('nama_kups','id');
 		
 		$data['forms'] = array(
-			'id_kups' => ['Kups', Form::select("id_kups", $ref_kups, null, ["class" => "form-control select2"]) ],
-			'type' => ['Type', Form::text("type", $survey->type, ["class" => "form-control","placeholder" => "", "required" => "required", "id" => "type"]) ],
+			'id_kps' => ['', Form::hidden("id_kps", $survey->id_kps, ["class" => "form-control"]) ],
+			'nama_survey' => ['Nama Survey', Form::text("nama_survey", $survey->nama_survey, ["class" => "form-control","placeholder" => ""]) ],
+			'luas' => ['Luas', Form::text("luas", $survey->luas .' M Persegi', ["class" => "form-control","placeholder" => "", "disabled" => "disabled", "id" => "type"]) ],
+			'keterangan' => ['Keterangan', Form::textarea("keterangan", $survey->keterangan, ["class" => "form-control","placeholder" => "", "required" => "required", "id" => "type"]) ],
 			
 		);
 
@@ -234,14 +236,14 @@ class SurveyController extends Controller
 	public function update(Request $request, $id)
 	{
 		$this->validate($request, [
-			'id_kups' => 'required',
-			'type' => 'required',
+			'nama_survey' => 'required',
+			// 'type' => 'required',
 			
 		]);
 		
 		$survey = Survey::find($id);
-		$survey->id_kups = $request->input("id_kups");
-		$survey->type = $request->input("type");
+		$survey->keterangan = $request->input("keterangan");
+		$survey->nama_survey = $request->input("nama_survey");
 		
 		$survey->updated_by = Auth::id();
 		$survey->save();
@@ -249,19 +251,22 @@ class SurveyController extends Controller
 
 		$text = 'mengedit '.$this->title;//.' '.$survey->what;
 		$this->log($request, $text, ['survey.id' => $survey->id]);
-		return redirect()->route('survey.index')->with('message_success', 'Survey berhasil diubah!');
+		return redirect()->back()->with('message_success', 'Survey berhasil diubah!');
 	}
 
 	public function destroy(Request $request, $id)
 	{
 		$survey = Survey::find($id);
+
+		$id_kps = $survey->id_kps;
+
 		$survey->deleted_by = Auth::id();
 		$survey->save();
 		$survey->delete();
 
 		$text = 'menghapus '.$this->title;//.' '.$survey->what;
 		$this->log($request, $text, ['survey.id' => $survey->id]);
-		return back()->with('message_success', 'Survey berhasil dihapus!');
+		return redirect()->route('kps.survey.index', $id_kps)->with('message_success', 'Survey berhasil dihapus!');
 	}
 
 }

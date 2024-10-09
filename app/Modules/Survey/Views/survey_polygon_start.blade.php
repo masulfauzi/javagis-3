@@ -10,7 +10,7 @@
         <div class="page-title">
             <div class="row mb-2">
                 <div class="col-12 col-md-6 order-md-1 order-last">
-                    <a href="{{ route('survey.index') }}" class="btn btn-sm icon icon-left btn-outline-secondary"><i
+                    <a href="{{ route('kps.survey.index', $survey->id_kps) }}" class="btn btn-sm icon icon-left btn-outline-secondary"><i
                             class="fa fa-arrow-left"></i> Kembali </a>
                 </div>
                 <div class="col-12 col-md-6 order-md-2 order-first">
@@ -215,28 +215,32 @@
         });
     </script>
 
-    <script>
-        var polygon = turf.polygon([
-            [
-                @foreach($koord_survey as $item)
-                    [{{ $item->koord_y }},{{ $item->koord_x }}],
-                @endforeach
-                [{{ $koord_survey_pertama->koord_y }},{{ $koord_survey_pertama->koord_x }}],
-            ],
-        ]);
+    @if (count($koord_survey)>0)
+        <script>
+            var polygon = turf.polygon([
+                [
+                    @foreach($koord_survey as $item)
+                        [{{ $item->koord_y }},{{ $item->koord_x }}],
+                    @endforeach
+                    [{{ $koord_survey_pertama->koord_y }},{{ $koord_survey_pertama->koord_x }}],
+                ],
+            ]);
 
-        var area = turf.area(polygon);
+            var area = turf.area(polygon);
 
-        $.ajax({
-            url: "{{ route('survey.simpan_luas.store') }}",
-            type: "POST",
-            data: {
-                id_survey: "{{ $survey->id }}",
-                _token: "{{ csrf_token() }}",
-                luas: area
-            }
-        });
-    </script>
+            $.ajax({
+                url: "{{ route('survey.simpan_luas.store') }}",
+                type: "POST",
+                data: {
+                    id_survey: "{{ $survey->id }}",
+                    _token: "{{ csrf_token() }}",
+                    luas: area
+                }
+            });
+        </script>
+        
+    @endif
+
 
     <script>
         // Map initialization 
