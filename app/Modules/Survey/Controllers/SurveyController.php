@@ -14,6 +14,8 @@ use App\Modules\Kps\Models\Kps;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
 
+use function PHPUnit\Framework\returnValue;
+
 class SurveyController extends Controller
 {
 	use Logger;
@@ -252,6 +254,51 @@ class SurveyController extends Controller
 		$text = 'mengedit '.$this->title;//.' '.$survey->what;
 		$this->log($request, $text, ['survey.id' => $survey->id]);
 		return redirect()->back()->with('message_success', 'Survey berhasil diubah!');
+	}
+
+	public function form_polygon_manual(Request $request)
+	{
+		return view('Survey::survey_polygon_manual');
+	}
+
+	public function simpan_polygon_manual(Request $request)
+	{
+		$koordinat = json_decode($request->geojson, true);
+
+		$arr_koordinat = $koordinat['geometry']['coordinates'][0];
+
+		// dd($koordinat['geometry']['coordinates'][0]);
+
+		$survey = new Survey();
+		$survey->id_kps = $request->input("id_kps");
+		$survey->type = $request->input("type");
+		$survey->nama_survey = $request->input("nama");
+		$survey->keterangan = $request->input("keterangan");
+		$survey->luas = $request->input("luas");
+		
+		$survey->created_by = Auth::id();
+		$survey->save();
+
+		$i = 1;
+		foreach($arr_koordinat as $item)
+		{
+			$koord_x = $item[1];
+			// dd($koord_x);
+			$koord_y = $item[0];
+
+			$koord_survey = new KoordSurvey();
+            $koord_survey->id_survey = $survey->id;
+            $koord_survey->index = $i;
+            $koord_survey->koord_x = $koord_x;
+            $koord_survey->koord_y = $koord_y;
+            $koord_survey->save();
+
+			$i++;
+		}
+
+		$text = 'mengedit '.$this->title;//.' '.$survey->what;
+		$this->log($request, $text, ['survey.id' => $survey->id]);
+		return redirect()->back()->with('message_success', 'Survey berhasil dibuat!');
 	}
 
 	public function destroy(Request $request, $id)

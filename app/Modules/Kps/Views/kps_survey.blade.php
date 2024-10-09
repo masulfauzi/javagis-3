@@ -371,7 +371,85 @@
         });
         map.addControl(drawControl);
 
+        map.on('draw:created', function(e) {
+            // var type = e.layerType;
+            var layer = e.layer;
+            var type = e.layerType;
 
+            var shape = layer.toGeoJSON()
+            var shape_for_db = JSON.stringify(shape);
+            const myObj = JSON.parse(shape_for_db);
+            var x = myObj["geometry"]["coordinates"];
+
+            
+
+            if (type === 'polygon') {
+
+                var seeArea = L.GeometryUtil.geodesicArea(layer.getLatLngs()[0]);
+                // console.log(seeArea);   
+
+                $.ajax({
+                    url: "{{ route('survey.form_polygon_manual.create') }}",
+                    type: "GET",
+                    dataType: "html",
+                    success: function(html) {
+                        $("#modal-body").html(html);
+                        // $("#geojson").val(shape_for_db);
+                        document.getElementById('geojson').value = shape_for_db;
+                        document.getElementById('id_kps').value = "{{ $kps->id }}";
+                        document.getElementById('luas').value = seeArea;
+
+                        $('#exampleModal').modal('show');
+                    }
+                });
+            }
+
+            // if (type === 'polyline') {
+            //     var coords = layer.getLatLngs();
+            //     var seeArea = 0;
+            //     for (var i = 0; i < coords.length - 1; i++) {
+            //         seeArea += coords[i].distanceTo(coords[i + 1]);
+            //     }
+            // } else if (type === 'rectangle') {
+            //     var seeArea = L.GeometryUtil.geodesicArea(layer.getLatLngs()[0]);
+            //     // console.log(seeArea);
+            // } else if (type === 'polygon') {
+            //     var seeArea = L.GeometryUtil.geodesicArea(layer.getLatLngs()[0]);
+            //     // console.log(seeArea);
+            // }
+
+            // // // console.log(layer.getLatLngs());  
+            // // polygon.addLayer(layer);
+            // // var seeArea = L.GeometryUtil.geodesicArea(layer.getLatLngs()[0]);
+            // // console.log(seeArea);              
+            // // // console.log(type); 
+
+            // var modal = document.getElementById("exampleModal");
+
+            // $.ajax({
+            //     url: "{{ url('/survey/create/') }}/" + type,
+            //     type: "GET",
+            //     dataType: "html",
+            //     success: function(html) {
+            //         $("#modal-body").html(html);
+            //         // $("#geojson").val(shape_for_db);
+            //         document.getElementById('koordinat').value = shape_for_db;
+            //         if (type != 'marker') {
+            //             document.getElementById('luas').value = seeArea;
+            //         }
+            //         if (type == 'marker') {
+            //             document.getElementById('luas').value = shape.geometry.coordinates[0] + ',' +
+            //                 shape.geometry.coordinates[1];
+            //             // console.log(shape.geometry.coordinates[0]);
+            //         }
+            //         $('#exampleModal').modal('show');
+            //     }
+            // });
+            // document.getElementById('koordinat').value = shape_for_db;
+            // document.getElementById('modal-body').innerHTML = shape_for_db;
+
+
+        });
 
 
 
