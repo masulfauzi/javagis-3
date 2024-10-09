@@ -59,7 +59,7 @@
         <div class="page-title">
             <div class="row mb-2">
                 <div class="col-12 col-md-6 order-md-1 order-last">
-                    <a href="{{ route('kups.index') }}" class="btn btn-sm icon icon-left btn-outline-secondary"><i
+                    <a href="{{ route('kps.show', $kps->id) }}" class="btn btn-sm icon icon-left btn-outline-secondary"><i
                             class="fa fa-arrow-left"></i> Kembali </a>
                 </div>
                 <div class="col-12 col-md-6 order-md-2 order-first">
