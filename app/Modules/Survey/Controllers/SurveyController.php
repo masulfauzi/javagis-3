@@ -1,6 +1,7 @@
 <?php
 namespace App\Modules\Survey\Controllers;
 
+use App\Helpers\Format;
 use Form;
 use App\Helpers\Logger;
 use Illuminate\Http\Request;
@@ -12,7 +13,7 @@ use App\Http\Controllers\Controller;
 use App\Modules\KoordSurvey\Models\KoordSurvey;
 use App\Modules\Kps\Models\Kps;
 use Illuminate\Support\Facades\Auth;
-use Barryvdh\DomPDF\Facade\Pdf;
+use Codedge\Fpdf\Fpdf\Fpdf;
 
 use function PHPUnit\Framework\returnValue;
 
@@ -57,13 +58,24 @@ class SurveyController extends Controller
 
 	public function print(Request $request, Survey $survey)
 	{
+
+		$pdf = new Fpdf;
+
+		$data['pdf'] = $pdf;
+		$data['survey'] = $survey;
+		$data['nama'] = Auth::user()->name;
+		$data['tgl_pembuatan'] = Format::tanggal($survey->created_at);
+
+		
+
+
+
 		// dd(Auth::user()->name);
 
-		$data['survey'] = $survey;
 
-		// return view('Survey::survey_print', $data);
-		$pdf = Pdf::loadView('Survey::survey_print', $data)->setPaper('a4', 'landscape');
-    	return $pdf->download('hasil-survey.pdf');
+		return view('Survey::survey_print', $data);
+		// $pdf = Pdf::loadView('Survey::survey_print', $data)->setPaper('a4', 'landscape');
+    	// return $pdf->download('hasil-survey.pdf');
 	}
 
 	public function export_survey(Request $request, Survey $survey)
