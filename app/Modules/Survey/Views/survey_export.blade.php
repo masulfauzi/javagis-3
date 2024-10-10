@@ -121,6 +121,8 @@
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.js"></script>
     <script src="{{ asset('assets/js/extensions/easyprint/dist/bundle.js') }}"></script>
+    <script src="{{ asset('assets/js/leaflet.latlng-graticule.js') }}"></script>
+
 
     <script>
         // OSM layers
@@ -137,6 +139,27 @@
         }).setView([{{ $kps->koord_y }}, {{ $kps->koord_x }}], 13);;
 
         map.addLayer(osm);
+
+        L.latlngGraticule({
+            showLabel: true,
+            zoomInterval: [
+            {start: 0, end: 1, interval: 90},
+            {start: 2, end: 2, interval: 45},
+            {start: 3, end: 3, interval: 10},
+            {start: 4, end: 5, interval: 5},
+            {start: 6, end: 6, interval: 2},
+            {start: 7, end: 7, interval: 1},
+            {start: 8, end: 8, interval: (30.0 / 60.0)},
+            {start: 9, end: 9, interval: (20.0 / 60.0)},
+            {start: 10, end: 10, interval: (10.0 / 60.0)},
+            {start: 11, end: 11, interval: (5.0 / 60.0)},
+            {start: 12, end: 12, interval: (2.0 / 60.0)},
+            {start: 13, end: 13, interval: (1.0 / 60.0)},
+            {start: 14, end: 15, interval: (0.5 / 60.0)},
+            {start: 16, end: 16, interval: (0.2 / 60.0)},
+            {start: 17, end: 18, interval: (0.1 / 60.0)},
+            ]
+        }).addTo(map);
 
         <?php
         
@@ -178,10 +201,12 @@
       		sizeModes: ['Current'],
       		filename: 'myMap',
       		exportOnly: true,
-      		hideControlContainer: true,
+      		hideControlContainer: false,
             tileWait: 1000,
             hidden: true
 		}).addTo(map);
+
+        L.control.scale({position:'bottomright', metric: true}).addTo(map);
 
         function manualPrint () {
 			printer.printMap('CurrentSize', 'MyManualPrint');

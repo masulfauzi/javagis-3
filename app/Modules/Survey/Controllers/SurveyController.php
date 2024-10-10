@@ -62,7 +62,7 @@ class SurveyController extends Controller
 		$data['survey'] = $survey;
 
 		// return view('Survey::survey_print', $data);
-		$pdf = Pdf::loadView('Survey::survey_print', $data);
+		$pdf = Pdf::loadView('Survey::survey_print', $data)->setPaper('a4', 'landscape');
     	return $pdf->download('hasil-survey.pdf');
 	}
 
