@@ -83,7 +83,7 @@
                     <div class="card">
 
                         <div class="card-body">
-                            <div id="map" style="width: 100%; height: 600px;">
+                            <div id="map" style="width: 700px; height: 620px;">
                                 
                             </div>
                             <button class="manualButton" onclick="manualPrint()">Manual print</button>

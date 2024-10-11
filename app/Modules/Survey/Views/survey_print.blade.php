@@ -13,9 +13,13 @@
     
     
     
-    $pdf->cell(300, 200, '', 1);
+    $pdf->cell(300, 266, '', 1);
     $pdf->image(public_path('export_image/'.$survey->image), 11, 11, 298);
 
+    $pdf->cell(5,20,'',);
+    $pdf->multiCell(100,20,'PETA '.Str::upper($survey->nama_survey), 1, 'C');
+    $pdf->cell(5,20,'',);
+    $pdf->multiCell(100,20,'PETA '.Str::upper($survey->nama_survey), 1, 'C');
     $pdf->cell(5,20,'',);
     $pdf->multiCell(100,20,'PETA '.Str::upper($survey->nama_survey), 1, 'C');
 

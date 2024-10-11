@@ -326,6 +326,7 @@
                     _lon_r = rt.lng;
 
                 var _point_per_lat = (_lat_t - _lat_b) / (hh * 0.2);
+                // var _point_per_lat = 33;
                 if (isNaN(_point_per_lat)) {
                     return;
                 }
