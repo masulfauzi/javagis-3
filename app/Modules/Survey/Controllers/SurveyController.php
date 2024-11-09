@@ -64,7 +64,7 @@ class SurveyController extends Controller
 		$data['pdf'] = $pdf;
 		$data['survey'] = $survey;
 		$data['nama'] = Auth::user()->name;
-		$data['tgl_pembuatan'] = Format::tanggal($survey->created_at);
+		$data['tgl_pembuatan'] = Format::tanggal($survey->created_at, false, false);
 
 		
 

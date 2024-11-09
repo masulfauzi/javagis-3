@@ -358,6 +358,7 @@
                 function __draw_lat_line(self, lat_tick) {
                     ll = self._latLngToCanvasPoint(L.latLng(lat_tick, _lon_l));
                     latstr = self.__format_lat(lat_tick);
+                    latstr = latstr.substring(0,6);
                     txtWidth = ctx.measureText(latstr).width;
                     var spacer = self.options.showLabel && label ? txtWidth + 10 : 0;
 
@@ -390,6 +391,7 @@
 
                             if (self.options.showLabel && label && _prev_p != null) {
                                 if (_prev_p.x < 0 && rr.x >= 0) {
+                                    // var _s = 33;
                                     var _s = (rr.x - 0) / (rr.x - _prev_p.x);
                                     var _y = rr.y - ((rr.y - _prev_p.y) * _s);
                                     ctx.fillText(latstr, 0, _y + (txtHeight/2));
@@ -423,6 +425,7 @@
                         ctx.lineTo(rr.x-1 - spacer, rr.y);
                         ctx.stroke();
                         if (self.options.showLabel && label) {
+                            // var _yy = 22;
                             var _yy = ll.y + (txtHeight/2)-2;
                             ctx.fillText(latstr, 0, _yy);
                             ctx.fillText(latstr, ww-txtWidth, _yy);
@@ -445,6 +448,7 @@
 
                 function __draw_lon_line(self, lon_tick) {
                     lngstr = self.__format_lng(lon_tick);
+                    lngstr = lngstr.substr(0,8);
                     txtWidth = ctx.measureText(lngstr).width;
                     var bb = self._latLngToCanvasPoint(L.latLng(_lat_b, lon_tick));
                     var spacer = self.options.showLabel && label ? txtHeight + 5 : 0;
@@ -463,6 +467,7 @@
 
                             if (self.options.showLabel && label && _prev_p != null) {
                                 if (_prev_p.y > 8 && tt.y <= 8) {
+                                    // ctx.fillText(lngstr, tt.x - (33), txtHeight + 5);
                                     ctx.fillText(lngstr, tt.x - (txtWidth/2), txtHeight + 5);
                                 }
                                 else if (_prev_p.y >= hh && tt.y < hh) {
