@@ -15,6 +15,7 @@ use App\Modules\Kups\Models\Kups;
 use App\Modules\Provinsi\Models\Provinsi;
 use App\Modules\SeksiWilayah\Models\SeksiWilayah;
 use App\Modules\Survey\Models\Survey;
+use App\Modules\Tematik\Models\Tematik;
 use Illuminate\Support\Facades\Auth;
 
 class KpsController extends Controller
@@ -80,6 +81,67 @@ class KpsController extends Controller
 
 		$this->log($request, 'melihat halaman manajemen data '.$this->title);
 		return view('Kps::kps', array_merge($data, ['title' => $this->title]));
+	}
+
+	public function index_tematik(Request $request)
+	{
+		$query = Kps::select('kps.*')
+					->join('desa as des', 'des.id', '=', 'kps.id_desa')
+					->join('kecamatan as kec', 'kec.id', '=', 'des.id_kecamatan')
+					->join('kabupaten as kab', 'kab.id', '=', 'kec.id_kabupaten')
+					->join('provinsi as prov', 'prov.id', '=', 'kab.id_provinsi')
+					->join('seksi_wilayah as seksi', 'seksi.id', '=', 'prov.id_seksi_wilayah')
+					->join('balai_pskl as balai', 'balai.id', '=', 'seksi.id_balai_pskl')
+					->join('tematik as tik', 'tik.id', '=', 'kps.id_tematik');
+
+		if($request->has('search')){
+			$search = $request->get('search');
+			// $query->where('name', 'like', "%$search%");
+		}
+
+		if($request->has('id_balai'))
+		{
+			$query->where('balai.id', $request->get('id_balai'));
+			$data['seksi_wilayah'] = SeksiWilayah::whereIdBalaiPskl($request->get('id_balai'))->pluck('nama_seksi_wilayah', 'id');
+			// dd($data['seksi_wilayah']);
+		}
+
+		if($request->has('id_seksi_wilayah') && $request->get('id_seksi_wilayah') != '')
+		{
+			$query->where('seksi.id', $request->get('id_seksi_wilayah'));
+			$data['provinsi'] = Provinsi::whereIdSeksiWilayah($request->get('id_seksi_wilayah'))->pluck('nama_provinsi', 'id');
+		}
+
+		if($request->has('id_provinsi') && $request->get('id_provinsi') != '')
+		{
+			$query->where('prov.id', $request->get('id_provinsi'));
+			$data['kabupaten'] = Kabupaten::whereIdProvinsi($request->get('id_provinsi'))->pluck('nama_kabupaten', 'id');
+		}
+
+		if($request->has('id_kabupaten') && $request->get('id_kabupaten') != '')
+		{
+			$query->where('kab.id', $request->get('id_kabupaten'));
+		}
+
+		$data['selected'] = [
+			'id_balai'	=> $request->get('id_balai'),
+			'id_seksi_wilayah'	=> $request->get('id_seksi_wilayah'),
+			'id_provinsi'	=> $request->get('id_provinsi'),
+			'id_kabupaten'	=> $request->get('id_kabupaten'),
+		];
+
+		$data['data'] = $query->paginate(10)->withQueryString();
+		$data['provinsi'] = Provinsi::select('provinsi.*')
+										->join('kabupaten as kab', 'kab.id_provinsi', '=', 'provinsi.id')
+										->join('kecamatan as kec', 'kec.id_kabupaten', '=', 'kab.id')
+										->join('desa as des', 'des.id_kecamatan', '=', 'kec.id')
+										->join('kps', 'kps.id_desa', '=', 'des.id')
+										->join('tematik as tik', 'tik.id', '=', 'kps.id_tematik')
+										->pluck('nama_provinsi', 'id');
+		$data['provinsi']->prepend('-PILIH SALAH SATU-', '');
+
+		$this->log($request, 'melihat halaman manajemen data '.$this->title);
+		return view('Kps::kps_tematik', array_merge($data, ['title' => $this->title]));
 	}
 
 	
@@ -170,11 +232,13 @@ class KpsController extends Controller
 
 		
 		// $ref_desa = Desa::all()->pluck('id_kecamatan','id');
+		$ref_tematik = Tematik::all()->pluck('tematik','id');
+		$ref_tematik->prepend('-PILIH SALAH SATU-','');
 		
 		// dd($data);
 		$data['forms'] = array(
 			'nama_kps' => ['Nama Kps', Form::text("nama_kps", $kps->nama_kps, ["class" => "form-control","placeholder" => "", "required" => "required", "id" => "nama_kps"]) ],
-			// 'id_desa' => ['Desa', Form::select("id_desa", $ref_desa, null, ["class" => "form-control select2"]) ],
+			'id_tematik' => ['Tematik', Form::select("id_tematik", $ref_tematik, $kps->id_tematik, ["class" => "form-control select2"]) ],
 			'no_sk' => ['No Sk', Form::text("no_sk", $kps->no_sk, ["class" => "form-control","placeholder" => "", "required" => "required", "id" => "no_sk"]) ],
 			'tgl_sk' => ['Tgl Sk', Form::text("tgl_sk", $kps->tgl_sk, ["class" => "form-control datepicker", "required" => "required", "id" => "tgl_sk"]) ],
 			'luas' => ['Luas', Form::text("luas", $kps->luas, ["class" => "form-control","placeholder" => "", "required" => "required", "id" => "luas"]) ],
@@ -192,7 +256,7 @@ class KpsController extends Controller
 	{
 		$this->validate($request, [
 			'nama_kps' => 'required',
-			'id_desa' => 'required',
+			// 'id_desa' => 'required',
 			'no_sk' => 'required',
 			'tgl_sk' => 'required',
 			'luas' => 'required',
@@ -203,7 +267,7 @@ class KpsController extends Controller
 		
 		$kps = Kps::find($id);
 		$kps->nama_kps = $request->input("nama_kps");
-		$kps->id_desa = $request->input("id_desa");
+		$kps->id_tematik = $request->input("id_tematik");
 		$kps->no_sk = $request->input("no_sk");
 		$kps->tgl_sk = $request->input("tgl_sk");
 		$kps->luas = $request->input("luas");

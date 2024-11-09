@@ -6,6 +6,7 @@ use App\Modules\Kabupaten\Controllers\KabupatenController;
 Route::controller(KabupatenController::class)->middleware(['web','auth'])->name('kabupaten.')->group(function(){
 	// custom routes
 	Route::get('/kabupaten/get_kabupaten', 'get_kabupaten')->name('get_kabupaten.index');
+	Route::get('/kabupaten/get_kabupaten_tematik', 'get_kabupaten_tematik')->name('get_kabupaten_tematik.index');
 	
 	
 	Route::get('/kabupaten', 'index')->name('index');

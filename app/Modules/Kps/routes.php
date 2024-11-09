@@ -7,6 +7,7 @@ Route::controller(KpsController::class)->middleware(['web','auth'])->name('kps.'
 	// route custom
 	Route::post('/kps/simpan_batas', 'simpan_batas')->name('simpan_batas.store');
 	Route::get('/kps/survey/{kps}', 'survey')->name('survey.index');
+	Route::get('/kps/tematik', 'index_tematik')->name('tematik.index');
 
 	Route::get('/kps', 'index')->name('index');
 	Route::get('/kps/data', 'data')->name('data.index');

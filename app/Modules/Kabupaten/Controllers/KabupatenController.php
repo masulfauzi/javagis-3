@@ -48,6 +48,23 @@ class KabupatenController extends Controller
         return response()->json($data);
 	}
 
+	public function get_kabupaten_tematik(Request $request)
+	{
+		$data = [];
+
+        if($request->filled('id_provinsi')){
+            $data = Kabupaten::select("kabupaten.id", "kabupaten.nama_kabupaten")
+								->join('kecamatan as kec', 'kec.id_kabupaten', '=', 'kabupaten.id')
+								->join('desa as des', 'des.id_kecamatan', '=', 'kec.id')
+								->join('kps', 'kps.id_desa', '=', 'des.id')
+								->join('tematik as tik', 'tik.id', '=', 'kps.id_tematik')
+								->whereIdProvinsi($request->id_provinsi)
+                        		->get();
+        }
+
+        return response()->json($data);
+	}
+
 	public function create(Request $request)
 	{
 		$ref_provinsi = Provinsi::all()->pluck('id_seksi_wilayah','id');
