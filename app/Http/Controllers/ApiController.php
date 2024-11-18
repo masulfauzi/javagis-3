@@ -10,7 +10,9 @@ class ApiController extends Controller
 {
     public function get_kps(Request $request)
     {
-        $kps = Kps::select('kps.nama_kps', 'kps.id', 'kps.koord_x', 'koord_y')->paginate(10)->withQueryString();
+        $kps = Kps::select('kps.nama_kps', 'kps.id', 'kps.koord_x', 'kps.koord_y', 'desa.nama_desa', 'kps.id_desa', 'kps.no_sk', 'kps.tgl_sk')
+                    ->join('desa', 'kps.id_desa', '=', 'desa.id')
+                    ->paginate(10)->withQueryString();
 
         return response()->json([
             "success" => true,
