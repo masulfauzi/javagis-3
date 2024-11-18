@@ -16,11 +16,15 @@ class ApiController extends Controller
             "success" => true,
             "message" => "Berhasil mengambil data kps",
             "data" => $kps
-        ]);
+        ], 200);
     }
 
     public function detail_kps(Request $request, Kps $kps)
     {
-        return $kps;
+        return response()->json([
+            "success" => true,
+            "message" => "Berhasil mengambil detail kps",
+            "data" => $kps
+        ], 200);
     }
 }
