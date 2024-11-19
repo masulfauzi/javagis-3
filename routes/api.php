@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ApiController;
+use App\Http\Controllers\LoginController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,5 +20,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/kps', [ApiController::class, 'get_kps']);
-Route::get('/kps/{kps}', [ApiController::class, 'detail_kps']);
+Route::post('/auth/login', [LoginController::class, 'login']);
+Route::get('/kps', [ApiController::class, 'get_kps'])->middleware('auth:sanctum');
+Route::get('/kps/{kps}', [ApiController::class, 'detail_kps'])->middleware('auth:sanctum');
