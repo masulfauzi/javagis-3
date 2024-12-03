@@ -100,7 +100,13 @@
                                     <p>Wilayah</p>
                                 </div>
                                 <div class='col-lg-10'>
-                                    <p class='fw-bold'>{{ $kps->desa->nama_desa }} - {{ $kps->desa->kecamatan->nama_kecamatan }} - {{ $kps->desa->kecamatan->kabupaten->nama_kabupaten }} - {{ $kps->desa->kecamatan->kabupaten->provinsi->nama_provinsi }} - {{ $kps->desa->kecamatan->kabupaten->provinsi->seksiWilayah->nama_seksi_wilayah }} - {{ $kps->desa->kecamatan->kabupaten->provinsi->seksiWilayah->balaiPskl->nama_balai_pskl }}
+                                    <p class='fw-bold'>{{ $kps->desa->nama_desa }} -
+                                        {{ $kps->desa->kecamatan->nama_kecamatan }} -
+                                        {{ $kps->desa->kecamatan->kabupaten->nama_kabupaten }} -
+                                        {{ $kps->desa->kecamatan->kabupaten->provinsi->nama_provinsi }} -
+                                        {{ $kps->desa->kecamatan->kabupaten->provinsi->seksiWilayah->nama_seksi_wilayah }}
+                                        -
+                                        {{ $kps->desa->kecamatan->kabupaten->provinsi->seksiWilayah->balaiPskl->nama_balai_pskl }}
                                     </p>
                                 </div>
 
@@ -144,13 +150,14 @@
                         <div class="col-9">
                             <form action="{{ route('survey.index') }}" method="get">
                                 <div class="form-group col-md-3 has-icon-left position-relative">
-                                    <input type="text" class="form-control" value="{{ request()->get('search') }}" name="search" placeholder="Search">
+                                    <input type="text" class="form-control" value="{{ request()->get('search') }}"
+                                        name="search" placeholder="Search">
                                     <div class="form-control-icon"><i class="fa fa-search"></i></div>
                                 </div>
                             </form>
                         </div>
-                        <div class="col-3">  
-                            {!! button('survey.create', $title) !!}  
+                        <div class="col-3">
+                            {!! button('survey.create', $title) !!}
                         </div>
                     </div>
                     @include('include.flash')
@@ -161,7 +168,7 @@
                                     <th width="15">No</th>
                                     <td>Kups</td>
                                     <td>Type</td>
-                                    
+
                                     <th width="20%">Aksi</th>
                                 </tr>
                             </thead>
@@ -172,16 +179,15 @@
                                         <td>{{ $no++ }}</td>
                                         <td>{{ $item->nama_survey }}</td>
                                         <td>{{ $item->type }}</td>
-                                        
+
                                         <td>
                                             @if ($item->type == 'marker')
-                                            {!! button('survey.marker.show','', $item->id) !!}
-                                            
+                                                {!! button('survey.marker.show', '', $item->id) !!}
                                             @else
-                                            
-                                            {!! button('survey.polygon.show','', $item->id) !!}
+                                                {!! button('survey.polygon.show', '', $item->id) !!}
                                             @endif
-                                            <a href="{{ route('survey.export.show', $item->id) }}" class="btn btn-outline-primary">Export</a>
+                                            <a href="{{ route('survey.export.show', $item->id) }}"
+                                                class="btn btn-outline-primary">Export</a>
                                             {{-- {!! button('survey.edit', $title, $item->id) !!} --}}
                                             {{-- {!! button('survey.destroy', $title, $item->id) !!} --}}
                                         </td>
@@ -196,7 +202,7 @@
                     </div>
                 </div>
             </div>
-    
+
         </section>
     </div>
 
@@ -246,19 +252,19 @@
             echo "var layerKps = $kps->geojson;";
         
             echo 'var myStyle = {
-                                    "color": "#ff7800",
-                                    "weight": 5,
-                                    "opacity": 0.65
-                                };';
+                                                            "color": "#ff7800",
+                                                            "weight": 5,
+                                                            "opacity": 0.65
+                                                        };';
         
             echo "L.geoJSON(layerKps, {
-                                        style: myStyle
-                                    }).addTo(map).bindPopup('Area KPS $kps->nama_kps');";
+                                                                style: myStyle
+                                                            }).addTo(map).bindPopup('Area KPS $kps->nama_kps');";
         }
         
         ?>
 
-        
+
 
         <?php 
         if($marker)
@@ -266,7 +272,8 @@
             foreach($marker as $item_marker)
             {
         ?>
-        var marker = L.marker([{{ $item_marker->koord_y }}, {{ $item_marker->koord_x }}]).addTo(map).bindPopup('{{ $item_marker->nama_survey }}');
+        var marker = L.marker([{{ $item_marker->koord_y }}, {{ $item_marker->koord_x }}]).addTo(map).bindPopup(
+            '{{ $item_marker->nama_survey }}');
         <?php
             }
         }
@@ -364,7 +371,7 @@
             draw: {
                 polygon: true,
                 marker: false,
-                polyline: false,
+                polyline: true,
                 rectangle: false,
                 circle: false
             }
@@ -381,12 +388,33 @@
             const myObj = JSON.parse(shape_for_db);
             var x = myObj["geometry"]["coordinates"];
 
-            
+
 
             if (type === 'polygon') {
 
                 var seeArea = L.GeometryUtil.geodesicArea(layer.getLatLngs()[0]);
                 // console.log(seeArea);   
+
+                $.ajax({
+                    url: "{{ route('survey.form_polygon_manual.create') }}",
+                    type: "GET",
+                    dataType: "html",
+                    success: function(html) {
+                        $("#modal-body").html(html);
+                        // $("#geojson").val(shape_for_db);
+                        document.getElementById('geojson').value = shape_for_db;
+                        document.getElementById('id_kps').value = "{{ $kps->id }}";
+                        document.getElementById('luas').value = seeArea;
+
+                        $('#exampleModal').modal('show');
+                    }
+                });
+            } else if (type === 'polyline') {
+                var coords = layer.getLatLngs();
+                var seeArea = 0;
+                for (var i = 0; i < coords.length - 1; i++) {
+                    seeArea += coords[i].distanceTo(coords[i + 1]);
+                }
 
                 $.ajax({
                     url: "{{ route('survey.form_polygon_manual.create') }}",
@@ -450,11 +478,6 @@
 
 
         });
-
-
-
-
-        
     </script>
 @endsection
 
