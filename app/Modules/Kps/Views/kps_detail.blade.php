@@ -297,7 +297,9 @@
             }
         };
 
-        var hasil_survey_{{ $no }} = L.geoJSON(koord_{{ $no }}).on('click', polyOnClick);
+        var hasil_survey_{{ $no }} = L.geoJSON(koord_{{ $no }}, {
+            customId: "{{ $item_survey->id }}"
+        }).on('click', polyOnClick);
 
         layerControl.addOverlay(hasil_survey_{{ $no }}, "{{ $item_survey->nama_survey }}");
 
