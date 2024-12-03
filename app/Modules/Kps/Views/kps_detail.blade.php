@@ -79,7 +79,7 @@
                                         role="tab" aria-controls="daftar_kups" aria-selected="false">Daftar KUPS</a>
                                 </li>
                                 <li class="nav-item" role="presentation">
-                                    <a class="nav-link" id="survey-tab" href="{{ route('kps.survey.index',$kps->id) }}"
+                                    <a class="nav-link" id="survey-tab" href="{{ route('kps.survey.index', $kps->id) }}"
                                         role="tab" aria-controls="survey" aria-selected="true">Survey</a>
                                 </li>
                             </ul>
@@ -201,6 +201,25 @@
             </div>
         </section>
     </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" aria-labelledby="exampleModalLabel" aria-hidden="true"
+        style="overflow:hidden;">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Informasi Objek</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modal-body">
+
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
 @endsection
 
 @section('page-js')
@@ -208,16 +227,10 @@
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
     <script>
-
-        
-
-        
-        
-
         var littleton = L.marker([39.61, -105.02]).bindPopup('This is Littleton, CO.'),
-            denver    = L.marker([39.74, -104.99]).bindPopup('This is Denver, CO.'),
-            aurora    = L.marker([39.73, -104.8]).bindPopup('This is Aurora, CO.'),
-            golden    = L.marker([39.77, -105.23]).bindPopup('This is Golden, CO.');
+            denver = L.marker([39.74, -104.99]).bindPopup('This is Denver, CO.'),
+            aurora = L.marker([39.73, -104.8]).bindPopup('This is Aurora, CO.'),
+            golden = L.marker([39.77, -105.23]).bindPopup('This is Golden, CO.');
 
         var cities = L.layerGroup([littleton, denver, aurora, golden]);
 
@@ -228,7 +241,8 @@
 
         var osmHOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
             maxZoom: 19,
-            attribution: '© OpenStreetMap contributors, Tiles style by Humanitarian OpenStreetMap Team hosted by OpenStreetMap France'});
+            attribution: '© OpenStreetMap contributors, Tiles style by Humanitarian OpenStreetMap Team hosted by OpenStreetMap France'
+        });
 
         var map = L.map('map', {
             center: [{{ $kps->koord_y }}, {{ $kps->koord_x }}],
@@ -236,17 +250,16 @@
             layers: [osm, cities]
         });
 
-        
 
-        <?php 
-            if($kps->geojson)
-            {
-                echo "var map_kps = $kps->geojson;";
-                echo "L.geoJSON(map_kps).addTo(map).bindPopup('Area KPS $kps->nama_kps');";
-            }
+
+        <?php
+        if ($kps->geojson) {
+            echo "var map_kps = $kps->geojson;";
+            echo "L.geoJSON(map_kps).addTo(map).on('click', polyOnClick);";
+        }
         ?>
 
-        
+
 
         var baseMaps = {
             "OpenStreetMap": osm,
@@ -269,34 +282,53 @@
                     $koord_survey = \App\Modules\KoordSurvey\Models\KoordSurvey::whereIdSurvey($item_survey->id)->orderBy('index')->get();
 
         ?>
-                    var koord_{{ $no }} = {"type":"Feature",
-                        "properties":{},
-                        "geometry":{
-                            "type":"Polygon",
-                            "coordinates":[
-                                [
-                                    @foreach($koord_survey as $item)
-                                    [{{ $item->koord_y }},{{ $item->koord_x }}],
-                                    @endforeach
-                                ]
-                            ]
-                        }
-                    };
+        var koord_{{ $no }} = {
+            "type": "Feature",
+            "properties": {},
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                    [
+                        @foreach ($koord_survey as $item)
+                            [{{ $item->koord_y }}, {{ $item->koord_x }}],
+                        @endforeach
+                    ]
+                ]
+            }
+        };
 
-                    var hasil_survey_{{ $no }} = L.geoJSON(koord_{{ $no }}).bindPopup("{{ $item_survey->nama_survey }}");
+        var hasil_survey_{{ $no }} = L.geoJSON(koord_{{ $no }}).bindPopup(
+            "{{ $item_survey->nama_survey }}");
 
-                    layerControl.addOverlay(hasil_survey_{{ $no }}, "{{ $item_survey->nama_survey }}");
-            
+        layerControl.addOverlay(hasil_survey_{{ $no }}, "{{ $item_survey->nama_survey }}");
+
         <?php
                     $no ++;
                 }
             }
 
         ?>
-       
 
+        function polyOnClick(e) {
+            var customId = this.options.customId;
+            // alert("hi. you clicked the marker at " + customId);
+            $.ajax({
+                url: "{{ url('survey') }}/" + customId,
+                type: "GET",
+                dataType: "html",
+                success: function(html) {
+                    $("#modal-body").html(html);
+                    // $("#geojson").val(shape_for_db);
+                    // document.getElementById('koordinat').value = shape_for_db;
+                    // document.getElementById('id_kps').value = "{{ $kps->id }}";
+                    // document.getElementById('type').value = "marker";
 
+                    $('#exampleModal').modal('show');
+                }
+            });
 
+            $('#exampleModal').modal('show');
+        }
     </script>
 @endsection
 
