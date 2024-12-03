@@ -255,7 +255,7 @@
         <?php
         if ($kps->geojson) {
             echo "var map_kps = $kps->geojson;";
-            echo "L.geoJSON(map_kps).addTo(map).on('click', polyOnClick);";
+            echo "L.geoJSON(map_kps).addTo(map).bindPopup('Area KPS $kps->nama_kps');";
         }
         ?>
 
@@ -297,8 +297,7 @@
             }
         };
 
-        var hasil_survey_{{ $no }} = L.geoJSON(koord_{{ $no }}).bindPopup(
-            "{{ $item_survey->nama_survey }}");
+        var hasil_survey_{{ $no }} = L.geoJSON(koord_{{ $no }}).on('click', polyOnClick);
 
         layerControl.addOverlay(hasil_survey_{{ $no }}, "{{ $item_survey->nama_survey }}");
 
