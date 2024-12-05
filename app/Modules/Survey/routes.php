@@ -7,6 +7,7 @@ Route::controller(SurveyController::class)->middleware(['web','auth'])->name('su
 	// custom routes
 	Route::get('/survey/form_marker/{kps}', 'form_marker')->name('form_marker.create');
 	Route::get('/survey/form_survey/{kps}', 'form_survey')->name('form_survey.create');
+	Route::get('/survey/form_line/{kps}', 'form_line')->name('form_line.create');
 	Route::get('/survey/export/{survey}', 'export_survey')->name('export.show');
 	Route::post('/survey/save_image', 'save_image')->name('save_image.store');
 	Route::get('/survey/print/{survey}', 'print')->name('print.show');
@@ -16,9 +17,14 @@ Route::controller(SurveyController::class)->middleware(['web','auth'])->name('su
 	Route::get('/survey/marker/manual/{survey}', 'marker_manual')->name('marker.manual.show');
 	Route::get('/survey/polygon/start/{survey}', 'polygon_start')->name('polygon.start.show');
 	Route::get('/survey/polygon/{survey}', 'polygon')->name('polygon.show');
+	Route::get('/survey/polyline/{survey}', 'polyline')->name('polyline.show');
 	Route::post('/survey/simpan_luas', 'simpan_luas')->name('simpan_luas.store');
 	Route::post('/survey/simpan_polygon_manual', 'simpan_polygon_manual')->name('simpan_polygon_manual.store');
 	Route::get('/survey/form_polygon_manual', 'form_polygon_manual')->name('form_polygon_manual.create');
+	Route::get('/survey/form_polyline_manual', 'form_polyline_manual')->name('form_polyline_manual.create');
+	Route::post('/survey/simpan_polyline_manual', 'simpan_polyline_manual')->name('simpan_polyline_manual.store');
+	Route::get('/survey/polyline/start/{survey}', 'polyline_start')->name('polyline.start.show');
+	Route::get('/survey/polyline/tracking/{survey}', 'polyline_tracking')->name('polyline.tracking.show');
 
 	
 	

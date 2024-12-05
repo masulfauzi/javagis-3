@@ -27,6 +27,29 @@
             opacity: 0.8;
             cursor: pointer;
         }
+        
+        #line {
+            display: flex;
+            align-items: center;
+            position: absolute;
+            top: 386px;
+            right: 11px;
+            width: 32px;
+            height: 32px;
+            background-color: white;
+            border-radius: 3px;
+            border-color: gray;
+            border-style: solid;
+            border-width: 1px 1px 1px 1px;
+            opacity: 0.6;
+            text-align: center;
+            z-index: 500;
+        }
+
+        #line:hover {
+            opacity: 0.8;
+            cursor: pointer;
+        }
 
         #titik {
             display: flex;
@@ -132,6 +155,9 @@
                                 <button id="titik" class="d-flex justify-content-center">
                                     <i class='fa fa-map-marker'></i>
                                 </button>
+                                <button id="line" class="d-flex justify-content-center">
+                                    <i class="fas fa-bezier-curve"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -183,7 +209,11 @@
                                         <td>
                                             @if ($item->type == 'marker')
                                                 {!! button('survey.marker.show', '', $item->id) !!}
-                                            @else
+                                            @endif
+                                            @if ($item->type == 'polyline')
+                                                {!! button('survey.polyline.show', '', $item->id) !!}
+                                            @endif
+                                            @if ($item->type == 'polygon')
                                                 {!! button('survey.polygon.show', '', $item->id) !!}
                                             @endif
                                             <a href="{{ route('survey.export.show', $item->id) }}"
@@ -363,6 +393,32 @@
 
             // })
         });
+        
+        L.DomEvent.on(document.getElementById('line'), 'click', function() {
+            // map.locate({
+            //     setView: true,
+            //     maxZoom: 20
+            // });
+
+            $.ajax({
+                url: "{{ route('survey.form_line.create', $kps->id) }}",
+                type: "GET",
+                dataType: "html",
+                success: function(html) {
+                    $("#modal-body").html(html);
+                    // $("#geojson").val(shape_for_db);
+                    // document.getElementById('koordinat').value = shape_for_db;
+                    document.getElementById('id_kps').value = "{{ $kps->id }}";
+                    document.getElementById('type').value = "polyline";
+
+                    $('#exampleModal').modal('show');
+                }
+            });
+
+            $('#exampleModal').modal('show');
+
+            
+        });
 
         var drawnItems = new L.FeatureGroup();
         map.addLayer(drawnItems);
@@ -417,7 +473,7 @@
                 }
 
                 $.ajax({
-                    url: "{{ route('survey.form_polygon_manual.create') }}",
+                    url: "{{ route('survey.form_polyline_manual.create') }}",
                     type: "GET",
                     dataType: "html",
                     success: function(html) {

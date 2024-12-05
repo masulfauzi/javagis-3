@@ -154,6 +154,17 @@ class SurveyController extends Controller
 				return redirect()->route('survey.tracking.show', $survey->id);
 			}
 		}
+		else if($request->input('type') == 'polyline')
+		{
+			if($request->input('metode') == 'titik')
+            {
+                return redirect()->route('survey.polyline.start.show', $survey->id);
+            }
+            else if($request->input('metode') == 'tracking')
+            {
+                return redirect()->route('survey.polyline.tracking.show', $survey->id);
+            }
+		}
 
 
 		$text = 'membuat '.$this->title; //' baru '.$survey->what;
@@ -169,6 +180,16 @@ class SurveyController extends Controller
 		$data['kps'] = Kps::find($survey->id_kps);
 
 		return view('Survey::survey_tracking', array_merge($data, ['title' => $this->title]));
+	}
+	
+	public function polyline_tracking(Request $request, Survey $survey)
+	{
+		$data['survey'] = $survey;
+		$data['koord_survey'] = KoordSurvey::whereIdSurvey($survey->id)->get();
+		// dd($data['koord_survey']);
+		$data['kps'] = Kps::find($survey->id_kps);
+
+		return view('Survey::survey_polyline_tracking', array_merge($data, ['title' => $this->title]));
 	}
 
 	public function marker(Request $request, Survey $survey)
@@ -208,6 +229,16 @@ class SurveyController extends Controller
 		return view('Survey::survey_polygon_start', array_merge($data, ['title' => $this->title]));
 	}
 	
+	public function polyline_start(Request $request, Survey $survey)
+	{
+		$data['survey'] = $survey;
+		$data['kps'] = Kps::find($survey->id_kps);
+		$data['koord_survey'] = KoordSurvey::whereIdSurvey($survey->id)->orderby('index')->get();
+		$data['koord_survey_pertama'] = KoordSurvey::whereIdSurvey($survey->id)->orderby('index')->first();
+
+		return view('Survey::survey_polyline_start', array_merge($data, ['title' => $this->title]));
+	}
+	
 	public function polygon(Request $request, Survey $survey)
 	{
 		$data['survey'] = $survey;
@@ -217,6 +248,15 @@ class SurveyController extends Controller
 
 
 		return view('Survey::survey_polygon', array_merge($data, ['title' => $this->title]));
+	}
+	
+	public function polyline(Request $request, Survey $survey)
+	{
+		$data['survey'] = $survey;
+		$data['kps'] = Kps::find($survey->id_kps);
+		$data['koord_survey'] = KoordSurvey::whereIdSurvey($survey->id)->orderby('index')->get();
+
+		return view('Survey::survey_polyline', array_merge($data, ['title' => $this->title]));
 	}
 
 	public function simpan_luas(Request $request)
@@ -230,6 +270,11 @@ class SurveyController extends Controller
 	public function form_survey(Request $request, Kups $kups)
 	{
 		return view('Survey::form_survey');
+	}
+	
+	public function form_line(Request $request, Kups $kups)
+	{
+		return view('Survey::form_line');
 	}
 
 	public function show(Request $request, Survey $survey)
@@ -290,6 +335,11 @@ class SurveyController extends Controller
 	{
 		return view('Survey::survey_polygon_manual');
 	}
+	
+	public function form_polyline_manual(Request $request)
+	{
+		return view('Survey::survey_polyline_manual');
+	}
 
 	public function simpan_polygon_manual(Request $request)
 	{
@@ -327,6 +377,48 @@ class SurveyController extends Controller
 		}
 
 		$text = 'mengedit '.$this->title;//.' '.$survey->what;
+		$this->log($request, $text, ['survey.id' => $survey->id]);
+		return redirect()->back()->with('message_success', 'Survey berhasil dibuat!');
+	}
+	
+	public function simpan_polyline_manual(Request $request)
+	{
+		$koordinat = json_decode($request->geojson, true);
+
+		// dd($koordinat);
+
+		$arr_koordinat = $koordinat['geometry']['coordinates'];
+
+		// dd($koordinat['geometry']['coordinates']);
+
+		$survey = new Survey();
+		$survey->id_kps = $request->input("id_kps");
+		$survey->type = $request->input("type");
+		$survey->nama_survey = $request->input("nama");
+		$survey->keterangan = $request->input("keterangan");
+		$survey->luas = $request->input("luas");
+		
+		$survey->created_by = Auth::id();
+		$survey->save();
+
+		$i = 1;
+		foreach($arr_koordinat as $item)
+		{
+			$koord_x = $item[1];
+			// dd($koord_x);
+			$koord_y = $item[0];
+
+			$koord_survey = new KoordSurvey();
+            $koord_survey->id_survey = $survey->id;
+            $koord_survey->index = $i;
+            $koord_survey->koord_x = $koord_x;
+            $koord_survey->koord_y = $koord_y;
+            $koord_survey->save();
+
+			$i++;
+		}
+
+		$text = 'menambah line manual '.$this->title;//.' '.$survey->what;
 		$this->log($request, $text, ['survey.id' => $survey->id]);
 		return redirect()->back()->with('message_success', 'Survey berhasil dibuat!');
 	}
