@@ -273,7 +273,7 @@
             position: 'bottomright',
             draw: {
                 polygon: false,
-                marker: true,
+                marker: false,
                 polyline: false,
                 rectangle: false,
                 circle: false

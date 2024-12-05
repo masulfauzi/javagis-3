@@ -9,7 +9,7 @@
             display: flex;
             align-items: center;
             position: absolute;
-            top: 450px;
+            top: 429px;
             right: 11px;
             width: 32px;
             height: 32px;
@@ -32,7 +32,7 @@
             display: flex;
             align-items: center;
             position: absolute;
-            top: 495px;
+            top:470px;
             right: 11px;
             width: 32px;
             height: 32px;

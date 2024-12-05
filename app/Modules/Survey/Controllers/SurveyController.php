@@ -117,7 +117,7 @@ class SurveyController extends Controller
 		$this->validate($request, [
 			'id_kps' => 'required',
 			'type' => 'required',
-			// 'metode' => 'required',
+			'metode' => 'required',
 			'nama' => 'required',
 		]);
 
@@ -126,13 +126,22 @@ class SurveyController extends Controller
 		$survey->type = $request->input("type");
 		$survey->nama_survey = $request->input("nama");
 		$survey->keterangan = $request->input("keterangan");
+		$survey->metode = $request->input('metode');
 		
 		$survey->created_by = Auth::id();
 		$survey->save();
 
 		if($request->input('type') == 'marker')
 		{
-			return redirect()->route('survey.marker.start.show', $survey->id);
+			if($request->input('metode') == 'aktual')
+			{
+				return redirect()->route('survey.marker.start.show', $survey->id);
+			}
+			else if($request->input('metode') == 'manual')
+			{
+				return redirect()->route('survey.marker.manual.show', $survey->id);
+			}
+
 		}
 		else if($request->input('type') == 'polygon')
 		{
@@ -169,6 +178,15 @@ class SurveyController extends Controller
 		$data['koord_survey'] = KoordSurvey::whereIdSurvey($survey->id)->get();
 
 		return view('Survey::survey_marker', array_merge($data, ['title' => $this->title]));
+	}
+	
+	public function marker_manual(Request $request, Survey $survey)
+	{
+		$data['survey'] = $survey;
+		$data['kps'] = Kps::find($survey->id_kps);
+		$data['koord_survey'] = KoordSurvey::whereIdSurvey($survey->id)->get();
+
+		return view('Survey::survey_marker_manual', array_merge($data, ['title' => $this->title]));
 	}
 
 	public function marker_start(Request $request, Survey $survey)
