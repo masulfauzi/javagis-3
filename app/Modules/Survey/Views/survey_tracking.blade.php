@@ -208,6 +208,7 @@
     </script>
 
     <script>
+        var index = 1;
         // Map initialization 
         var map = L.map('map').setView([{{ $kps->koord_x }}, {{ $kps->koord_y }}], 6);
 
@@ -299,9 +300,12 @@
                     id_survey: "{{ $survey->id }}",
                     _token: "{{ csrf_token() }}",
                     koord_x: lat,
-                    koord_y: long
+                    koord_y: long,
+                    index: index
                 }
             });
+
+            index ++;
         }
     </script>
 @endsection

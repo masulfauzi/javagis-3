@@ -117,19 +117,19 @@ class KoordSurveyController extends Controller
 	{
 		$cek_koord = KoordSurvey::whereIdSurvey($request->get('id_survey'))->orderBy('created_at','DESC')->first();
 
-		if($cek_koord)
-		{
-			$index = $cek_koord->index + 1;
-		}
-		else{
-			$index = 0;
-		}
+		// if($cek_koord)
+		// {
+		// 	$index = $cek_koord->index + 1;
+		// }
+		// else{
+		// 	$index = 0;
+		// }
 
 		$koordsurvey = new KoordSurvey();
 		$koordsurvey->id_survey = $request->input("id_survey");
 		$koordsurvey->koord_x = $request->input("koord_x");
 		$koordsurvey->koord_y = $request->input("koord_y");
-		$koordsurvey->index = $index;
+		$koordsurvey->index = $request->input("index");
 		
 		$koordsurvey->created_by = Auth::id();
 		$koordsurvey->save();
