@@ -254,13 +254,19 @@
         }
         ?>
 
+        // if (!navigator.geolocation) {
+        //     console.log("Your browser doesn't support geolocation feature!")
+        // } else {
+        //     setInterval(() => {
+        //         navigator.geolocation.getCurrentPosition(getPosition);
+
+        //     }, 4000);
+        // }
+        
         if (!navigator.geolocation) {
             console.log("Your browser doesn't support geolocation feature!")
         } else {
-            setInterval(() => {
-                navigator.geolocation.getCurrentPosition(getPosition);
-
-            }, 4000);
+            navigator.geolocation.watchPosition(getPosition);
         }
 
         var marker, circle;
