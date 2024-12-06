@@ -42,7 +42,7 @@ class KpsController extends Controller
 
 		if ($request->has('search')) {
 			$search = $request->get('search');
-			// $query->where('name', 'like', "%$search%");
+			$query->where('nama_kps', 'like', "%$search%");
 		}
 
 		if ($request->has('id_balai')) {
