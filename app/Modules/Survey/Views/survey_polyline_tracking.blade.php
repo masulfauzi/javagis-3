@@ -142,9 +142,9 @@
     </div>
 
     <!-- Modal -->
+    {{-- <div class="modal fade" id="exampleModal" aria-labelledby="exampleModalLabel" aria-hidden="true" --}}
     <div class="modal fade" id="exampleModal" aria-labelledby="exampleModalLabel" aria-hidden="true"
-    {{-- <div class="modal fade" id="exampleModal" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-keyboard="false" data-bs-backdrop="static" --}}
-        style="overflow:hidden;">
+        data-bs-keyboard="false" data-bs-backdrop="static" style="overflow:hidden;">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -159,8 +159,6 @@
         </div>
 
     </div>
-    
-    
 @endsection
 
 @section('page-js')
@@ -270,53 +268,53 @@
 
             console.log(accuracy);
 
-            if(accuracy < 5)
-            {
+            if (accuracy < 5) {
                 console.log("akurat");
                 $('#exampleModal').modal('hide');
-            }
-            else{
+
+                if (marker) {
+                    map.removeLayer(marker)
+                }
+
+                if (circle) {
+                    map.removeLayer(circle)
+                }
+
+                marker = L.marker([lat, long])
+                circle = L.circle([lat, long], {
+                    radius: accuracy
+                })
+
+                var featureGroup = L.featureGroup([marker, circle]).addTo(map)
+
+                map.fitBounds(featureGroup.getBounds())
+
+                // console.log("Your coordinate is: Lat: " + lat + " Long: " + long + " Accuracy: " + accuracy)
+
+                $.ajax({
+                    url: "{{ route('koordsurvey.simpan_koord_tracking.store') }}",
+                    type: "POST",
+                    data: {
+                        id_survey: "{{ $survey->id }}",
+                        _token: "{{ csrf_token() }}",
+                        koord_x: lat,
+                        koord_y: long,
+                        index: index
+                    }
+                });
+                index++;
+            } else {
                 console.log("nyasar");
                 $('#exampleModal').modal('show');
 
-            //     document.getElementById('koord_x').value = lat;
-            // document.getElementById('koord_y').value = long;
+                //     document.getElementById('koord_x').value = lat;
+                // document.getElementById('koord_y').value = long;
 
-            if (marker) {
-                map.removeLayer(marker)
+
+
             }
 
-            if (circle) {
-                map.removeLayer(circle)
-            }
 
-            marker = L.marker([lat, long])
-            circle = L.circle([lat, long], {
-                radius: accuracy
-            })
-
-            var featureGroup = L.featureGroup([marker, circle]).addTo(map)
-
-            map.fitBounds(featureGroup.getBounds())
-
-            // console.log("Your coordinate is: Lat: " + lat + " Long: " + long + " Accuracy: " + accuracy)
-
-            $.ajax({
-                url: "{{ route('koordsurvey.simpan_koord_tracking.store') }}",
-                type: "POST",
-                data: {
-                    id_survey: "{{ $survey->id }}",
-                    _token: "{{ csrf_token() }}",
-                    koord_x: lat,
-                    koord_y: long,
-                    index: index
-                }
-            });
-
-            index++;
-            }
-
-            
 
             // console.log(index);
         }
