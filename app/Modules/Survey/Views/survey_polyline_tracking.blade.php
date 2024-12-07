@@ -199,29 +199,7 @@
         ?>
 
 
-        <?php 
-        if($koord_survey)
-        {
-        ?>
-        var hasil_survey = {
-            "type": "Feature",
-            "properties": {},
-            "geometry": {
-                "type": "Polygon",
-                "coordinates": [
-                    [
-                        @foreach ($koord_survey as $item)
-                            [{{ $item->koord_y }}, {{ $item->koord_x }}],
-                        @endforeach
-                    ]
-                ]
-            }
-        };
 
-        L.geoJSON(hasil_survey).addTo(map).bindPopup('Hasil Survey');
-        <?php
-        }
-        ?>
 
         // if (!navigator.geolocation) {
         //     console.log("Your browser doesn't support geolocation feature!")
@@ -302,6 +280,34 @@
                         index: index
                     }
                 });
+
+                <?php 
+                if($koord_survey = \App\Modules\KoordSurvey\Models\KoordSurvey::whereIdSurvey($survey->id))
+                    {
+                ?>
+                if (hasil_survey) {
+                    map.removeLayer(hasil_survey)
+                }
+
+                var hasil_survey = {
+                    "type": "Feature",
+                    "properties": {},
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                            [
+                                @foreach ($koord_survey as $item)
+                                    [{{ $item->koord_y }}, {{ $item->koord_x }}],
+                                @endforeach
+                            ]
+                        ]
+                    }
+                };
+
+                L.geoJSON(hasil_survey).addTo(map);
+                <?php
+                }
+                ?>
                 index++;
             } else {
                 console.log("nyasar");
