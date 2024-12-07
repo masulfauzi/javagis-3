@@ -142,7 +142,8 @@
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="exampleModal" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-keyboard="false" data-bs-backdrop="static"
+    <div class="modal fade" id="exampleModal" aria-labelledby="exampleModalLabel" aria-hidden="true"
+    {{-- <div class="modal fade" id="exampleModal" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-keyboard="false" data-bs-backdrop="static" --}}
         style="overflow:hidden;">
         <div class="modal-dialog">
             <div class="modal-content">
