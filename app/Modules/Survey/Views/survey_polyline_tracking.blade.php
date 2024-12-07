@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('page-css')
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 @endsection
 
@@ -66,7 +66,9 @@
                             <div class="row">
                                 <div class="col-10">
                                     {{-- <button onclick="alertCustom()" class="btn btn-danger">Selesai Tracking</button> --}}
-                                    <a class="btn btn-danger" onclick="selesaiTracking('{{ route('kps.survey.index', $survey->id_kps) }}')">Selesai Tracking</a>
+                                    <a class="btn btn-danger"
+                                        onclick="selesaiTracking('{{ route('kps.survey.index', $survey->id_kps) }}')">Selesai
+                                        Tracking</a>
                                 </div>
                                 <div class="col-3">
                                 </div>
@@ -87,7 +89,7 @@
                     Tabel Data {{ $title }}
                 </h6>
                 <div class="card-body">
-                    
+
                     @include('include.flash')
                     <div class="table-responsive-md col-12">
                         <table class="table" id="table1">
@@ -194,13 +196,13 @@
 @endsection
 
 @section('page-js')
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script>
         $(document).ready(function() {
 
             $("#tambahkoord").on("click", function() {
-                
+
                 $('#exampleModal').modal('show');
             });
 
@@ -235,21 +237,22 @@
         if($koord_survey)
         {
         ?>
-            var hasil_survey = {"type":"Feature",
-                                "properties":{},
-                                "geometry":{
-                                    "type":"Polygon",
-                                    "coordinates":[
-                                        [
-                                            @foreach($koord_survey as $item)
-                                                [{{ $item->koord_y }},{{ $item->koord_x }}],
-                                            @endforeach
-                                        ]
-                                    ]
-                                }
-                            };
-            
-            L.geoJSON(hasil_survey).addTo(map).bindPopup('Hasil Survey');
+        var hasil_survey = {
+            "type": "Feature",
+            "properties": {},
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                    [
+                        @foreach ($koord_survey as $item)
+                            [{{ $item->koord_y }}, {{ $item->koord_x }}],
+                        @endforeach
+                    ]
+                ]
+            }
+        };
+
+        L.geoJSON(hasil_survey).addTo(map).bindPopup('Hasil Survey');
         <?php
         }
         ?>
@@ -262,7 +265,7 @@
 
         //     }, 4000);
         // }
-        
+
         if (!navigator.geolocation) {
             console.log("Your browser doesn't support geolocation feature!")
         } else {
@@ -271,8 +274,27 @@
 
         var marker, circle;
 
+        const options = {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0,
+        };
+
+        function success(pos) {
+            const crd = pos.coords;
+
+            console.log("Your current position is:");
+            console.log(`Latitude : ${crd.latitude}`);
+            console.log(`Longitude: ${crd.longitude}`);
+            console.log(`More or less ${crd.accuracy} meters.`);
+        }
+
+        function error(err) {
+            console.warn('ERROR(${err.code}): ${err.message}');
+        }
+
         function getPosition(position) {
-            // console.log(position)
+            console.log(navigator.geolocation.getCurrentPosition(success, error, options));
             var lat = position.coords.latitude
             var long = position.coords.longitude
             var accuracy = position.coords.accuracy
@@ -311,7 +333,7 @@
                 }
             });
 
-            index ++;
+            index++;
 
             // console.log(index);
         }
