@@ -269,7 +269,7 @@
 
             console.log(accuracy);
 
-            if(accuracy < 10)
+            if(accuracy < 5)
             {
                 console.log("akurat");
                 $('#exampleModal').modal('hide');
