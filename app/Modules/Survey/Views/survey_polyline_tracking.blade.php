@@ -142,50 +142,15 @@
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="exampleModal" aria-labelledby="exampleModalLabel" aria-hidden="true"
+    <div class="modal fade" id="exampleModal" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-keyboard="false" data-bs-backdrop="static"
         style="overflow:hidden;">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Informasi Objek</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title" id="exampleModalLabel">Informasi</h5>
                 </div>
                 <div class="modal-body" id="modal-body">
-                    <form action="{{ route('koordsurvey.store') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        {!! Form::hidden('koord_x', null, ['id' => 'koord_x']) !!}
-                        {!! Form::hidden('koord_y', null, ['id' => 'koord_y']) !!}
-                        {!! Form::hidden('id_survey', $survey->id, ['id' => 'id_survey']) !!}
-
-                        <div class="row">
-                            <div class="col-md-3 form-group">
-                                <label for="">Keterangan Lokasi</label>
-                            </div>
-                            <div class="col-md-9 form-group">
-                                <textarea name="ket_lokasi" id="ket_lokasi" cols="30" rows="5" class="form-control"></textarea>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-3 form-group">
-                                <label for="">Keterangan Objek</label>
-                            </div>
-                            <div class="col-md-9 form-group">
-                                <textarea name="ket_objek" id="ket_objek" cols="30" rows="5" class="form-control"></textarea>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-3 form-group">
-                                <label for="">Foto</label>
-                            </div>
-                            <div class="col-md-9 form-group">
-                                <input type="file" name="foto" class="form-control" id="foto" placeholder=""
-                                    accept="capture=camera,image/*">
-                            </div>
-                        </div>
-
-
-                        <button class="btn btn-primary" type="submit">Simpan</button>
-                    </form>
+                    <h2>MENCARI SINYAL GPS</h2>
 
                 </div>
 
@@ -193,6 +158,8 @@
         </div>
 
     </div>
+    
+    
 @endsection
 
 @section('page-js')
@@ -281,26 +248,38 @@
         };
 
         function success(pos) {
-            const crd = pos.coords;
+            // const crd = pos.coords;
 
-            console.log("Your current position is:");
-            console.log(`Latitude : ${crd.latitude}`);
-            console.log(`Longitude: ${crd.longitude}`);
-            console.log(`More or less ${crd.accuracy} meters.`);
+            // console.log("Your current position is:");
+            // console.log(`Latitude : ${crd.latitude}`);
+            // console.log(`Longitude: ${crd.longitude}`);
+            // console.log(`More or less ${crd.accuracy} meters.`);
         }
 
         function error(err) {
-            console.warn('ERROR(${err.code}): ${err.message}');
+            // console.warn('ERROR(${err.code}): ${err.message}');
         }
 
         function getPosition(position) {
-            console.log(navigator.geolocation.getCurrentPosition(success, error, options));
+            // console.log(navigator.geolocation.getCurrentPosition(success, error, options));
+            navigator.geolocation.getCurrentPosition(success, error, options)
             var lat = position.coords.latitude
             var long = position.coords.longitude
             var accuracy = position.coords.accuracy
 
-            document.getElementById('koord_x').value = lat;
-            document.getElementById('koord_y').value = long;
+            console.log(accuracy);
+
+            if(accuracy < 10)
+            {
+                console.log("akurat");
+                $('#exampleModal').modal('hide');
+            }
+            else{
+                console.log("nyasar");
+                $('#exampleModal').modal('show');
+
+            //     document.getElementById('koord_x').value = lat;
+            // document.getElementById('koord_y').value = long;
 
             if (marker) {
                 map.removeLayer(marker)
@@ -334,6 +313,9 @@
             });
 
             index++;
+            }
+
+            
 
             // console.log(index);
         }
