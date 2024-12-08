@@ -282,9 +282,11 @@
                 });
 
                 <?php 
-                if($koord_survey = \App\Modules\KoordSurvey\Models\KoordSurvey::whereIdSurvey($survey->id))
+                if($koord_survey = \App\Modules\KoordSurvey\Models\KoordSurvey::whereIdSurvey($survey->id)->get())
                     {
                 ?>
+
+                console.log(testing);
                 // if (hasil_survey) {
                 //     map.removeLayer(hasil_survey)
                 // }
