@@ -304,7 +304,7 @@
                     }
                 };
 
-                L.geoJSON(layerKps).addTo(map);
+                L.geoJSON(layerKps, {style: myStyle}).addTo(map);
                 <?php
                 }
                 ?>
