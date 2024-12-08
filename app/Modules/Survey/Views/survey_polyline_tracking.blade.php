@@ -193,7 +193,7 @@
         
             echo 'var myStyle = {"color": "#ff7800","weight": 5,"opacity": 0.65};';
         
-            // echo "L.geoJSON(layerKps, {style: myStyle}).addTo(map).bindPopup('Area KPS $kps->nama_kps');";
+            echo "L.geoJSON(layerKps, {style: myStyle}).addTo(map).bindPopup('Area KPS $kps->nama_kps');";
         }
         
         ?>
@@ -306,7 +306,7 @@
                     }
                 };
 
-                L.geoJSON(layerKps, {style: myStyle}).addTo(map);
+                L.geoJSON(hasil_survey).addTo(map);
                 <?php
                 }
                 ?>
