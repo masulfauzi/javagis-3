@@ -216,7 +216,7 @@
             navigator.geolocation.watchPosition(getPosition);
         }
 
-        var marker, circle;
+        var marker, circle, hasil_survey;
 
         const options = {
             enableHighAccuracy: true,
@@ -285,9 +285,9 @@
                 if($koord_survey = \App\Modules\KoordSurvey\Models\KoordSurvey::whereIdSurvey($survey->id))
                     {
                 ?>
-                if (hasil_survey) {
-                    map.removeLayer(hasil_survey)
-                }
+                // if (hasil_survey) {
+                //     map.removeLayer(hasil_survey)
+                // }
 
                 var hasil_survey = {
                     "type": "Feature",
