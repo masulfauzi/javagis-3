@@ -23,3 +23,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/auth/login', [LoginController::class, 'login']);
 Route::get('/kps', [ApiController::class, 'get_kps'])->middleware('auth:sanctum');
 Route::get('/kps/{kps}', [ApiController::class, 'detail_kps'])->middleware('auth:sanctum');
+Route::post('/survei/start', [ApiController::class, 'start_survei'])->middleware('auth:sanctum');
+Route::post('/survei/update', [ApiController::class, 'update_survei'])->middleware('auth:sanctum');
