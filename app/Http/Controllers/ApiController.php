@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Modules\KoordSurvey\Models\KoordSurvey;
 use App\Modules\Kps\Models\Kps;
 use App\Modules\Survey\Models\Survey;
 use Illuminate\Http\Request;
@@ -52,12 +53,103 @@ class ApiController extends Controller
         // Implement your survei logic here
         // For example, update the survei data in a database
 
-        $survey = Survey::find($request->input('surveiId'));
+        $surveis  = json_decode($request->input('geoJson'));
+        $features = $surveis->features;
 
-        $survey->status     = 1;
-        $survey->geojson    = $request->input('geoJson');
-        $survey->updated_at = $request->input('endedAt');
-        $survey->save();
+        $no     = 1;
+        $id_kps = '';
+        foreach ($features as $feature) {
+            $tipe = $feature->geometry->type;
+
+            if ($no == 1) {
+                $survey = Survey::find($request->input('surveiId'));
+                $id_kps = $survey->id_kps;
+
+                $survey->status     = 1;
+                $survey->tipe       = strtolower($tipe);
+                $survey->updated_at = $request->input('endedAt');
+                $survey->save();
+            } else {
+                $survey             = new Survey();
+                $survey->id_kps     = $id_kps;
+                $survey->tipe       = strtolower($tipe);
+                $survey->status     = 1;
+                $survey->created_at = $request->input('endedAt');
+                $survey->save();
+            }
+
+            // print_r($feature->properties->name);
+            // print_r($feature->geometry->type);
+            // print_r($feature->geometry->coordinates);
+            $koordinat = $feature->geometry->coordinates;
+
+            if ($tipe == 'Point') {
+                $koord_survey = new KoordSurvey();
+
+                $koord_survey->id_survey = $survey->id;
+                $koord_survey->koord_x   = $koordinat[0];
+                $koord_survey->koord_y   = $koordinat[1];
+                $koord_survey->index     = 1;
+
+                $koord_survey->save();
+
+                // $x = $koordinat[0];
+                // $y = $koordinat[1];
+                // echo "X - " . $x;
+                // echo "<br>";
+                // echo "Y - " . $y;
+                // echo "<br>";
+            } else if ($tipe == 'LineString') {
+                foreach ($koordinat as $titik) {
+
+                    $koord_survey = new KoordSurvey();
+
+                    $koord_survey->id_survey = $survey->id;
+                    $koord_survey->koord_x   = $titik[0];
+                    $koord_survey->koord_y   = $titik[1];
+                    $koord_survey->index     = 1;
+
+                    $koord_survey->save();
+
+                    // print_r($titik[0]);
+                    // echo "<br>";
+                    // echo "X - " . $titik[0];
+                    // echo "<br>";
+                    // echo "Y - " . $titik[1];
+                    // echo "<br>";
+                }
+                // die();
+            } else if ($tipe == 'Polygon') {
+                foreach ($koordinat[0] as $titik) {
+                    $koord_survey = new KoordSurvey();
+
+                    $koord_survey->id_survey = $survey->id;
+                    $koord_survey->koord_x   = $titik[0];
+                    $koord_survey->koord_y   = $titik[1];
+                    $koord_survey->index     = 1;
+
+                    $koord_survey->save();
+                    // print_r($titik);
+                    // echo "<br>";
+                    // echo "X - " . $titik[0];
+                    // echo "<br>";
+                    // echo "Y - " . $titik[1];
+                    // echo "<br>";
+                }
+                // die();
+            }
+
+            $no++;
+        }
+
+        // return $features;
+
+        // $survey = Survey::find($request->input('surveiId'));
+
+        // $survey->status     = 1;
+        // $survey->geojson    = $request->input('geoJson');
+        // $survey->updated_at = $request->input('endedAt');
+        // $survey->save();
 
         // $tipe = $request->input('tipe');
         // $geojson = $request->input('geoJson');
